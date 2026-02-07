@@ -14,11 +14,11 @@ interface EditableCellProps {
   syncOnDirectEdit?: boolean; // New prop to control sync behavior on direct edit
 }
 
-export const EditableCell: React.FC<EditableCellProps> = ({ 
-  value, 
-  onCommit, 
-  type = 'text', 
-  placeholder, 
+export const EditableCell: React.FC<EditableCellProps> = ({
+  value,
+  onCommit,
+  type = 'text',
+  placeholder,
   className,
   menuTitle = '수정 옵션',
   directEdit = false,
@@ -46,16 +46,21 @@ export const EditableCell: React.FC<EditableCellProps> = ({
     e.preventDefault();
 
     if (directEdit) {
-      setSkipSync(!syncOnDirectEdit); 
+      setSkipSync(!syncOnDirectEdit);
       setMode('edit');
       return;
     }
-    
+
     setMenuPos({ x: e.clientX, y: e.clientY });
     setMode('menu');
   };
 
   const handleSingleClick = (e: React.MouseEvent) => {
+    // If direct edit is enabled, single click always triggers edit mode regardless of screen size
+    if (directEdit) {
+      executeInteraction(e);
+      return;
+    }
     // Desktop/Tablet (>= 768px): Single Click triggers action
     if (window.innerWidth >= 768) {
       executeInteraction(e);
@@ -75,7 +80,7 @@ export const EditableCell: React.FC<EditableCellProps> = ({
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setLocalValue(e.target.value);
+    setLocalValue(e.target.value);
   };
 
   const handleBlur = () => {
@@ -87,9 +92,78 @@ export const EditableCell: React.FC<EditableCellProps> = ({
     }
   };
 
+  const moveFocus = (direction: 'up' | 'down' | 'left' | 'right') => {
+    const currentInput = inputRef.current;
+    if (!currentInput) return;
+
+    const currentTd = currentInput.closest('td');
+    const currentTr = currentInput.closest('tr');
+
+    if (!currentTd || !currentTr) return;
+
+    if (direction === 'up' || direction === 'down') {
+      const targetTr = direction === 'up' ? currentTr.previousElementSibling : currentTr.nextElementSibling;
+      if (targetTr) {
+        const cellIndex = Array.from(currentTr.children).indexOf(currentTd);
+        const targetTd = targetTr.children[cellIndex];
+        if (targetTd) {
+          const editable = targetTd.querySelector('[data-editable-cell="true"]');
+          if (editable) {
+            (editable as HTMLElement).click();
+            return;
+          }
+          const navigable = targetTd.querySelector('[data-navigable-cell="true"]');
+          if (navigable) {
+            (navigable as HTMLElement).focus();
+            return;
+          }
+        }
+      }
+    } else {
+      let targetTd = direction === 'left' ? currentTd.previousElementSibling : currentTd.nextElementSibling;
+      while (targetTd) {
+        const editable = targetTd.querySelector('[data-editable-cell="true"]');
+        if (editable) {
+          (editable as HTMLElement).click();
+          return;
+        }
+        const navigable = targetTd.querySelector('[data-navigable-cell="true"]');
+        if (navigable) {
+          (navigable as HTMLElement).focus();
+          return;
+        }
+        targetTd = direction === 'left' ? targetTd.previousElementSibling : targetTd.nextElementSibling;
+      }
+    }
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
+      e.preventDefault(); // Prevent default enter behavior
       inputRef.current?.blur();
+      moveFocus(e.shiftKey ? 'up' : 'down');
+    } else if (e.key === 'Tab') {
+      e.preventDefault(); // Prevent focus loss
+      inputRef.current?.blur();
+      moveFocus(e.shiftKey ? 'left' : 'right');
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      inputRef.current?.blur();
+      moveFocus('up');
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      inputRef.current?.blur();
+      moveFocus('down');
+    } else if (e.key === 'ArrowLeft' && (e.currentTarget as HTMLInputElement).selectionStart === 0) {
+      // Only move if cursor is at the start
+      e.preventDefault();
+      inputRef.current?.blur();
+      moveFocus('left');
+    } else if (e.key === 'ArrowRight' && (e.currentTarget as HTMLInputElement).selectionStart === (e.currentTarget as HTMLInputElement).value.length) {
+      // Only move if cursor is at the end
+      e.preventDefault();
+      inputRef.current?.blur();
+      moveFocus('right');
     } else if (e.key === 'Escape') {
       setMode('view');
     }
@@ -112,7 +186,8 @@ export const EditableCell: React.FC<EditableCellProps> = ({
 
   return (
     <>
-      <div 
+      <div
+        data-editable-cell="true"
         onClick={handleSingleClick}
         onDoubleClick={handleDoubleClick}
         className={`w-full h-full px-2 py-1 flex items-center cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors text-sm truncate ${!value ? 'text-gray-300 italic' : ''} ${className}`}
@@ -120,38 +195,38 @@ export const EditableCell: React.FC<EditableCellProps> = ({
       >
         {value || placeholder}
       </div>
-      
+
       {mode === 'menu' && (
         <ContextMenu
           title={menuTitle}
           position={menuPos}
           onClose={() => setMode('view')}
         >
-            <button 
-                onClick={() => handleOptionClick(true)}
-                className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors text-left group"
-            >
-                <div className="p-2 bg-gray-100 dark:bg-slate-600 rounded-full group-hover:bg-white dark:group-hover:bg-slate-500 shadow-sm">
-                    <Edit3 className="w-4 h-4 text-gray-500 dark:text-gray-300" />
-                </div>
-                <div>
-                    <span className="block text-sm font-bold text-gray-800 dark:text-gray-200">단순 텍스트 수정</span>
-                    <span className="block text-[10px] text-gray-500 dark:text-gray-400">로그만 변경 (배드 미작동)</span>
-                </div>
-            </button>
+          <button
+            onClick={() => handleOptionClick(true)}
+            className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors text-left group"
+          >
+            <div className="p-2 bg-gray-100 dark:bg-slate-600 rounded-full group-hover:bg-white dark:group-hover:bg-slate-500 shadow-sm">
+              <Edit3 className="w-4 h-4 text-gray-500 dark:text-gray-300" />
+            </div>
+            <div>
+              <span className="block text-sm font-bold text-gray-800 dark:text-gray-200">단순 텍스트 수정</span>
+              <span className="block text-[10px] text-gray-500 dark:text-gray-400">로그만 변경 (배드 미작동)</span>
+            </div>
+          </button>
 
-            <button 
-                onClick={() => handleOptionClick(false)}
-                className="flex items-center gap-3 p-3 rounded-lg hover:bg-brand-50 dark:hover:bg-brand-900/20 transition-colors text-left group"
-            >
-                <div className="p-2 bg-brand-100 dark:bg-brand-900 rounded-full group-hover:bg-white dark:group-hover:bg-brand-800 shadow-sm">
-                    <RefreshCw className="w-4 h-4 text-brand-600 dark:text-brand-400" />
-                </div>
-                <div>
-                    <span className="block text-sm font-bold text-gray-800 dark:text-gray-200">배드 적용 수정</span>
-                    <span className="block text-[10px] text-gray-500 dark:text-gray-400">변경 사항 배드 동기화</span>
-                </div>
-            </button>
+          <button
+            onClick={() => handleOptionClick(false)}
+            className="flex items-center gap-3 p-3 rounded-lg hover:bg-brand-50 dark:hover:bg-brand-900/20 transition-colors text-left group"
+          >
+            <div className="p-2 bg-brand-100 dark:bg-brand-900 rounded-full group-hover:bg-white dark:group-hover:bg-brand-800 shadow-sm">
+              <RefreshCw className="w-4 h-4 text-brand-600 dark:text-brand-400" />
+            </div>
+            <div>
+              <span className="block text-sm font-bold text-gray-800 dark:text-gray-200">배드 적용 수정</span>
+              <span className="block text-[10px] text-gray-500 dark:text-gray-400">변경 사항 배드 동기화</span>
+            </div>
+          </button>
         </ContextMenu>
       )}
     </>
