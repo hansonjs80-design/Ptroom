@@ -27,6 +27,8 @@ interface TreatmentContextType {
   toggleSound: () => void;
   isBackgroundKeepAlive: boolean;
   toggleBackgroundKeepAlive: () => void;
+  layoutMode: 'default' | 'alt';
+  toggleLayoutMode: () => void;
 
   // UI State for Modals
   selectingBedId: number | null;

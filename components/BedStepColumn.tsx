@@ -1,5 +1,5 @@
 
-import React, { memo, useState, useMemo } from 'react';
+import React, { memo, useState } from 'react';
 import { TreatmentStep } from '../types';
 import { getAbbreviation } from '../utils/bedUtils';
 import { getStepColor } from '../utils/styleUtils';
@@ -34,22 +34,6 @@ export const BedStepColumn: React.FC<BedStepColumnProps> = memo(({
   const [isEditingMemo, setIsEditingMemo] = useState(false);
   const colorClass = getStepColor(step, isActive, isPast, false, isCompleted);
 
-  const text = getAbbreviation(step.name);
-
-  // Dynamic Font Size Logic based on text length to prevent line breaks
-  const fontSizeClass = useMemo(() => {
-    const len = text.length;
-    if (len > 5) {
-      // Long text (e.g. Magnet+Laser): 2 steps smaller
-      return "text-xs xs:text-sm sm:text-lg lg:text-xl";
-    } else if (len > 3) {
-      // Medium text (e.g. TENS, ESWT): 1 step smaller
-      return "text-sm xs:text-base sm:text-xl lg:text-2xl";
-    }
-    // Short text (e.g. HP, ICT): Standard size
-    return "text-base xs:text-lg sm:text-2xl lg:text-3xl";
-  }, [text]);
-
   const handleMemoDoubleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -79,22 +63,16 @@ export const BedStepColumn: React.FC<BedStepColumnProps> = memo(({
       >
         {/* Step Visual Block */}
         <div className={`
-            flex-1 flex flex-col items-center justify-center p-1 relative overflow-hidden transition-all duration-200 
+            flex-1 flex flex-col items-center justify-center p-0.5 relative overflow-hidden transition-all duration-200 
             ${colorClass}
             ${isSelectedForSwap ? 'ring-4 ring-indigo-500 ring-inset shadow-inner' : ''}
         `}>
             {/* 
-              Text Styling:
-              - fontSizeClass: Dynamic sizing based on length
-              - whitespace-nowrap: Forces single line
-              - tracking-tighter: Squeezes text slightly for better fit
+              Font Size Adjustment:
+              Reduced sizes and changed break-all to whitespace-nowrap to prevent wrapping
             */}
-            <span className={`
-              font-black leading-none text-center px-0.5 whitespace-nowrap tracking-tighter
-              ${fontSizeClass}
-              ${isActive ? 'scale-110 drop-shadow-sm' : 'opacity-90'}
-            `}>
-              {text}
+            <span className={`font-black text-sm xs:text-base sm:text-xl lg:text-2xl leading-none text-center whitespace-nowrap px-0.5 ${isActive ? 'scale-110 drop-shadow-sm' : 'opacity-90'}`}>
+              {getAbbreviation(step.name)}
             </span>
             
             {/* Active Indicator Pulse */}
@@ -120,8 +98,7 @@ export const BedStepColumn: React.FC<BedStepColumnProps> = memo(({
           onDoubleClick={handleMemoDoubleClick}
         >
           {memo ? (
-            // Updated Font Size: text-[10px] -> text-xs, sm:text-xs -> sm:text-sm
-            <span className="text-xs sm:text-sm font-bold leading-tight text-center truncate w-full">
+            <span className="text-[10px] sm:text-xs font-bold leading-tight text-center truncate w-full">
               {memo}
             </span>
           ) : (
@@ -132,7 +109,7 @@ export const BedStepColumn: React.FC<BedStepColumnProps> = memo(({
 
       {isEditingMemo && (
         <PopupEditor
-          title={`${text} 메모`}
+          title={`${getAbbreviation(step.name)} 메모`}
           initialValue={memo || ""}
           type="text"
           centered={true}

@@ -1,5 +1,4 @@
 
-import { useCallback } from 'react';
 import { BedState, Preset, QuickTreatment, PatientVisit, TreatmentStep } from '../types';
 import { useBedState } from './useBedState';
 import { useBedActions } from './useBedActions';
@@ -60,7 +59,7 @@ export const useBedManager = (
     overrideBedFromLog: integration.overrideBedFromLog,
     moveBedState: integration.moveBedState,
     // Utils
-    jumpToStep: (bedId: number, stepIndex: number) => {}, // Placeholder as per original
+    jumpToStep: (bedId: number, stepIndex: number) => {}, 
     realtimeStatus
   };
 };

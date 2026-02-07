@@ -1,15 +1,19 @@
 
 import React, { memo, useMemo } from 'react';
 import { BedLayoutProps } from '../types';
-import { LANDSCAPE_GRID_IDS } from '../constants/layout';
+import { LANDSCAPE_GRID_IDS, LANDSCAPE_GRID_IDS_ALT } from '../constants/layout';
 import { LandscapeBedCell, LandscapeEmptyCell } from './LandscapeCells';
+import { useTreatmentContext } from '../contexts/TreatmentContext';
 
 export const LandscapeLayout: React.FC<BedLayoutProps> = memo(({ beds, presets }) => {
+  const { layoutMode } = useTreatmentContext();
   const getBed = (id: number) => beds.find(b => b.id === id) || beds[0];
+
+  const gridIds = layoutMode === 'default' ? LANDSCAPE_GRID_IDS : LANDSCAPE_GRID_IDS_ALT;
 
   const gridItems = useMemo(() => {
     const items = [];
-    for (let i = 0; i < LANDSCAPE_GRID_IDS.length; i += 4) {
+    for (let i = 0; i < gridIds.length; i += 4) {
       // Helper to render a cell or empty slot
       const addCell = (id: number | null, keyPrefix: string) => {
         if (id === null) {
@@ -21,18 +25,18 @@ export const LandscapeLayout: React.FC<BedLayoutProps> = memo(({ beds, presets }
       };
 
       // Left Pair
-      addCell(LANDSCAPE_GRID_IDS[i], `row-${i}-col-1`);
-      addCell(LANDSCAPE_GRID_IDS[i+1], `row-${i}-col-2`);
+      addCell(gridIds[i], `row-${i}-col-1`);
+      addCell(gridIds[i+1], `row-${i}-col-2`);
       
       // Desktop Spacer (Aisle)
       items.push(<div key={`spacer-${i}`} className="hidden lg:block w-full" />);
       
       // Right Pair
-      addCell(LANDSCAPE_GRID_IDS[i+2], `row-${i}-col-3`);
-      addCell(LANDSCAPE_GRID_IDS[i+3], `row-${i}-col-4`);
+      addCell(gridIds[i+2], `row-${i}-col-3`);
+      addCell(gridIds[i+3], `row-${i}-col-4`);
     }
     return items;
-  }, [beds, presets]);
+  }, [beds, presets, gridIds]);
 
   return (
     <div className="block w-full h-full overflow-x-auto overflow-y-auto custom-scrollbar pb-0 px-0">
@@ -44,7 +48,7 @@ export const LandscapeLayout: React.FC<BedLayoutProps> = memo(({ beds, presets }
         min-w-[170vw] px-2 pl-[28px] pt-0
         sm:min-w-[120vw] sm:px-0
         lg:min-w-0 lg:w-full
-        translate-x-0 translate-y-0 lg:translate-x-[5px] lg:translate-y-[5px]
+        translate-x-[10px] translate-y-[10px]
       ">
         {gridItems}
       </div>

@@ -1,6 +1,6 @@
 
 import React, { memo } from 'react';
-import { BedState } from '../../types';
+import { BedState, BedStatus } from '../../types';
 import { getBedNumberColor } from '../../utils/styleUtils';
 import { BedStatusBadges } from '../BedStatusBadges';
 
@@ -12,13 +12,15 @@ interface BedNumberAndStatusProps {
 
 export const BedNumberAndStatus: React.FC<BedNumberAndStatusProps> = memo(({ bed, onMovePatient, onEditStatus }) => {
   const isBedT = bed.id === 11;
+  const isIdle = bed.status === BedStatus.IDLE;
+
   return (
     <div className="flex items-center gap-2">
       {/* Bed Number */}
       <div 
-        className="flex items-center justify-center cursor-pointer active:scale-95 transition-transform select-none"
-        onDoubleClick={onMovePatient}
-        title="더블클릭하여 환자 이동"
+        className={`flex items-center justify-center transition-transform select-none ${isIdle ? 'cursor-default' : 'cursor-pointer active:scale-95'}`}
+        onDoubleClick={isIdle ? undefined : onMovePatient}
+        title={isIdle ? undefined : "더블클릭하여 환자 이동"}
       >
         <span className={`font-black tracking-tighter leading-none text-3xl lg:text-5xl ${getBedNumberColor(bed)}`}>
           {isBedT ? 'T' : bed.id}

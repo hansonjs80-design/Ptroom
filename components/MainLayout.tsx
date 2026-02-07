@@ -84,13 +84,14 @@ export const MainLayout: React.FC = () => {
 
 
   // Dynamic class generation for main content area to handle Full Screen transitions
-  // Updated header height calculation: 3.5rem (56px) -> 62px for base
+  // Updated header height calculation for Tablet Compact Mode (52px)
   const mainContentPadding = isFullScreen 
     ? 'pt-[calc(env(safe-area-inset-top)+8px)] md:pt-[26px]' 
     : `
       pt-[calc(62px+env(safe-area-inset-top)+1rem)] 
       landscape:pt-[calc(2.5rem+env(safe-area-inset-top))]
-      md:pt-2 
+      md:pt-[calc(52px+env(safe-area-inset-top)+1rem)]
+      xl:pt-[calc(72px+env(safe-area-inset-top)+1rem)]
       md:landscape:pt-2
     `;
 
@@ -99,7 +100,7 @@ export const MainLayout: React.FC = () => {
       {/* 
         Header Wrapper
         - Hidden when isFullScreen is true
-        - Updated height: 62px base
+        - Updated height with md:h-[52px] for tablet compactness
       */}
       {!isFullScreen && (
         <div 
@@ -107,6 +108,8 @@ export const MainLayout: React.FC = () => {
           className="
             w-full z-40 will-change-transform
             h-[calc(62px+env(safe-area-inset-top))]
+            md:h-[calc(52px+env(safe-area-inset-top))]
+            xl:h-[calc(72px+env(safe-area-inset-top))]
             landscape:h-[calc(2.5rem+env(safe-area-inset-top))]
             absolute top-0 left-0 right-0
             md:relative md:top-auto md:left-auto md:right-auto md:shrink-0

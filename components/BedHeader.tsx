@@ -66,6 +66,8 @@ export const BedHeader = memo(({
   const handleBedNumberDoubleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    // 비어있는 배드는 이동 창을 띄우지 않음
+    if (bed.status === BedStatus.IDLE) return;
     setMovingPatientState({ bedId: bed.id, x: e.clientX, y: e.clientY });
   };
 
