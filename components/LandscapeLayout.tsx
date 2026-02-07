@@ -26,14 +26,14 @@ export const LandscapeLayout: React.FC<BedLayoutProps> = memo(({ beds, presets }
 
       // Left Pair
       addCell(gridIds[i], `row-${i}-col-1`);
-      addCell(gridIds[i+1], `row-${i}-col-2`);
-      
+      addCell(gridIds[i + 1], `row-${i}-col-2`);
+
       // Desktop Spacer (Aisle)
       items.push(<div key={`spacer-${i}`} className="hidden lg:block w-full" />);
-      
+
       // Right Pair
-      addCell(gridIds[i+2], `row-${i}-col-3`);
-      addCell(gridIds[i+3], `row-${i}-col-4`);
+      addCell(gridIds[i + 2], `row-${i}-col-3`);
+      addCell(gridIds[i + 3], `row-${i}-col-4`);
     }
     return items;
   }, [beds, presets, gridIds]);
@@ -45,7 +45,7 @@ export const LandscapeLayout: React.FC<BedLayoutProps> = memo(({ beds, presets }
         gap-y-[5px] gap-x-[5px] sm:gap-y-[5px] sm:gap-x-[5px]
         lg:gap-y-6 lg:gap-x-1.5 
         grid-cols-4 lg:grid-cols-[1fr_1fr_0px_1fr_1fr]
-        min-w-[170vw] px-2 pl-[28px] pt-0
+        min-w-[150vw] px-2 pl-[28px] pt-0
         sm:min-w-[120vw] sm:px-0
         lg:min-w-0 lg:w-full
         translate-x-[10px] translate-y-[10px]

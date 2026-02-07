@@ -13,13 +13,13 @@ interface BedTimerProps {
   onTogglePause: (e: React.MouseEvent) => void;
 }
 
-export const BedTimer: React.FC<BedTimerProps> = memo(({ 
-  bed, 
-  isTimerActive, 
-  isOvertime, 
-  isNearEnd, 
-  onTimerClick, 
-  onTogglePause 
+export const BedTimer: React.FC<BedTimerProps> = memo(({
+  bed,
+  isTimerActive,
+  isOvertime,
+  isNearEnd,
+  onTimerClick,
+  onTogglePause
 }) => {
   if (!isTimerActive) {
     if (bed.status === BedStatus.COMPLETED) {
@@ -34,7 +34,7 @@ export const BedTimer: React.FC<BedTimerProps> = memo(({
   }
 
   return (
-    <div 
+    <div
       className={`flex items-center gap-2 lg:gap-3 cursor-pointer transition-all scale-[0.95] lg:scale-100 origin-right lg:origin-center ${bed.isPaused ? 'opacity-50 grayscale' : ''}`}
     >
       {/* 
@@ -42,24 +42,22 @@ export const BedTimer: React.FC<BedTimerProps> = memo(({
         text-2xl -> text-3xl 
         lg:text-4xl -> lg:text-5xl 
       */}
-      <span 
+      <span
         onDoubleClick={onTimerClick}
-        className={`font-black text-3xl lg:text-5xl tracking-tighter leading-none tabular-nums ${
-        isOvertime ? 'text-red-500 animate-pulse' : 
-        isNearEnd ? 'text-orange-500 animate-pulse' :
-        'text-slate-700 dark:text-slate-200'
-      }`}>
+        className={`font-black text-3xl lg:text-5xl tracking-tighter leading-none tabular-nums w-[74px] lg:w-[140px] text-right inline-block mr-1 lg:mr-2 ${isOvertime ? 'text-red-500 animate-pulse' :
+            isNearEnd ? 'text-orange-500 animate-pulse' :
+              'text-slate-700 dark:text-slate-200'
+          }`}>
         {isOvertime && '+'}{formatTime(bed.remainingTime)}
       </span>
 
       {/* Pause Button */}
-      <button 
+      <button
         onClick={onTogglePause}
-        className={`p-1.5 lg:p-2 rounded-full transition-colors active:scale-90 shadow-sm ${
-          bed.isPaused 
-            ? 'bg-brand-500 text-white' 
+        className={`p-1.5 lg:p-2 rounded-full transition-colors active:scale-90 shadow-sm ${bed.isPaused
+            ? 'bg-brand-500 text-white'
             : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600'
-        }`}
+          }`}
       >
         {bed.isPaused ? <Play className="w-3.5 h-3.5 lg:w-4 lg:h-4 fill-current" /> : <Pause className="w-3.5 h-3.5 lg:w-4 lg:h-4 fill-current" />}
       </button>

@@ -14,9 +14,9 @@ interface BedCardProps {
   isCompact: boolean;
 }
 
-export const BedCard: React.FC<BedCardProps> = memo(({ 
-  bed, 
-  presets, 
+export const BedCard: React.FC<BedCardProps> = memo(({
+  bed,
+  presets,
   isCompact
 }) => {
   const {
@@ -39,13 +39,13 @@ export const BedCard: React.FC<BedCardProps> = memo(({
   const currentPreset = bed.customPreset || presets.find(p => p.id === bed.currentPresetId);
   const currentStep = currentPreset?.steps[bed.currentStepIndex];
   const steps = currentPreset?.steps || [];
-  
+
   // Timer Logic
   const isTimerActive = bed.status === BedStatus.ACTIVE && !!currentStep?.enableTimer;
   const isOvertime = isTimerActive && bed.remainingTime <= 0;
   // 1분(60초) 이하 남았을 때 (0초 초과)
   const isNearEnd = isTimerActive && bed.remainingTime > 0 && bed.remainingTime <= 60;
-  
+
   const [trashState, setTrashState] = useState<'idle' | 'confirm' | 'deleting'>('idle');
   const [swapSourceIndex, setSwapSourceIndex] = useState<number | null>(null);
 
@@ -88,10 +88,10 @@ export const BedCard: React.FC<BedCardProps> = memo(({
 
   return (
     <div className={`${containerClass} transform transition-transform duration-200 active:scale-[0.99]`}>
-      <BedHeader 
-        bed={bed} 
-        currentStep={currentStep} 
-        onTrashClick={handleTrashClick} 
+      <BedHeader
+        bed={bed}
+        currentStep={currentStep}
+        onTrashClick={handleTrashClick}
         trashState={trashState}
         onEditClick={setEditingBedId}
         onTogglePause={togglePause}
@@ -116,11 +116,11 @@ export const BedCard: React.FC<BedCardProps> = memo(({
           {bed.status === BedStatus.IDLE ? (
             <BedEmptyState onOpenSelector={() => setSelectingBedId(bed.id)} />
           ) : (
-            <div 
+            <div
               className="w-full h-full min-h-0"
               onDoubleClick={(e) => setEditingBedId(bed.id)}
             >
-              <BedContent 
+              <BedContent
                 steps={steps}
                 bed={bed}
                 queue={[]} // Queue visual removed
@@ -133,17 +133,17 @@ export const BedCard: React.FC<BedCardProps> = memo(({
         </div>
 
         {/* Removed BedStatusBadges from here as it is now in Header */}
-        
+
         {/* Spacer for Mobile Portrait to fill remaining height if any (pushes footer down) */}
-        {bed.status !== BedStatus.IDLE && <div className="flex-1 sm:hidden landscape:hidden" />}
+        {/* Spacer removed for mobile height optimization */}
       </div>
 
       {bed.status !== BedStatus.IDLE && (
-        <BedFooter 
-          bed={bed} 
-          steps={steps} 
-          onNext={nextStep} 
-          onPrev={prevStep} 
+        <BedFooter
+          bed={bed}
+          steps={steps}
+          onNext={nextStep}
+          onPrev={prevStep}
           onClear={clearBed}
           trashState={trashState}
           onTrashClick={handleTrashClick}
@@ -159,12 +159,12 @@ export const BedCard: React.FC<BedCardProps> = memo(({
     prevProps.bed.currentStepIndex === nextProps.bed.currentStepIndex &&
     prevProps.bed.isPaused === nextProps.bed.isPaused &&
     prevProps.bed.isInjection === nextProps.bed.isInjection &&
-    prevProps.bed.isFluid === nextProps.bed.isFluid && 
+    prevProps.bed.isFluid === nextProps.bed.isFluid &&
     prevProps.bed.isManual === nextProps.bed.isManual &&
     prevProps.bed.isESWT === nextProps.bed.isESWT &&
     prevProps.bed.isTraction === nextProps.bed.isTraction &&
-    prevProps.bed.customPreset === nextProps.bed.customPreset && 
-    prevProps.presets === nextProps.presets && 
+    prevProps.bed.customPreset === nextProps.bed.customPreset &&
+    prevProps.presets === nextProps.presets &&
     prevProps.isCompact === nextProps.isCompact
   );
 });
