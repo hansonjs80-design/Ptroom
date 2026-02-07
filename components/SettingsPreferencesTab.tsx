@@ -1,5 +1,6 @@
+
 import React, { useState, useEffect } from 'react';
-import { Volume2, VolumeX, Play, Bell, AlertTriangle, Zap } from 'lucide-react';
+import { Volume2, Play, Bell, AlertTriangle, Zap, CheckCircle2, Mic } from 'lucide-react';
 import { useTreatmentContext } from '../contexts/TreatmentContext';
 import { playAlarmPattern } from '../utils/alarm';
 
@@ -30,108 +31,111 @@ export const SettingsPreferencesTab: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-right-2 duration-200">
-      <div className="flex items-center gap-2 mb-2 px-1">
-        <Volume2 className="w-4 h-4 text-gray-400" />
-        <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">알림 설정</span>
-      </div>
+    <div className="space-y-4 animate-in fade-in slide-in-from-right-2 duration-300">
+      
+      {/* Sound Card */}
+      <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+        <div className="flex items-center gap-2 mb-4">
+           <div className="p-2 bg-pink-100 dark:bg-pink-900/30 rounded-lg text-pink-600 dark:text-pink-400">
+              <Volume2 className="w-5 h-5" />
+           </div>
+           <h3 className="font-black text-slate-800 dark:text-white text-lg">사운드 알림</h3>
+        </div>
 
-      <div className="bg-white dark:bg-slate-800 p-4 rounded-lg border border-gray-200 dark:border-slate-700 shadow-sm space-y-5">
-        
-        {/* Sound Toggle */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mb-4 pb-4 border-b border-slate-100 dark:border-slate-700">
           <div className="flex flex-col">
-            <span className="text-sm font-bold text-gray-800 dark:text-gray-100">치료 종료 알림음</span>
-            <span className="text-[10px] text-gray-500 dark:text-gray-400 mt-1">
-              타이머 종료 시 "삐-삐-삐" 반복음과 진동이 울립니다.
+            <span className="text-sm font-bold text-slate-700 dark:text-slate-200">치료 종료 알림음</span>
+            <span className="text-[10px] text-slate-400 mt-0.5">
+              타이머 종료 시 "삐-삐-삐" 반복음과 진동
             </span>
           </div>
-          
           <button 
             onClick={toggleSound}
-            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 ${
-              isSoundEnabled ? 'bg-brand-600' : 'bg-gray-200 dark:bg-slate-600'
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${
+              isSoundEnabled ? 'bg-pink-500' : 'bg-slate-200 dark:bg-slate-600'
             }`}
           >
-            <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+            <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow-sm ${
               isSoundEnabled ? 'translate-x-6' : 'translate-x-1'
             }`} />
           </button>
         </div>
 
-        {/* Background Mode Toggle */}
-        <div className="flex items-center justify-between border-t border-gray-100 dark:border-slate-700 pt-4">
-          <div className="flex flex-col pr-4">
-            <span className="text-sm font-bold text-gray-800 dark:text-gray-100 flex items-center gap-1">
-              <Zap className="w-3.5 h-3.5 text-amber-500" />
-              백그라운드 실행 유지
-            </span>
-            <span className="text-[10px] text-gray-500 dark:text-gray-400 mt-1 leading-snug">
-              화면이 꺼져도 타이머가 멈추지 않도록 무음 오디오를 재생합니다. 
-              <br/><span className="text-amber-600 dark:text-amber-500 font-bold">*배터리 소모가 약간 증가하지만 알림 신뢰성이 높아집니다.</span>
-            </span>
-          </div>
-          
-          <button 
-            onClick={toggleBackgroundKeepAlive}
-            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 shrink-0 ${
-              isBackgroundKeepAlive ? 'bg-brand-600' : 'bg-gray-200 dark:bg-slate-600'
-            }`}
-          >
-            <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-              isBackgroundKeepAlive ? 'translate-x-6' : 'translate-x-1'
-            }`} />
-          </button>
-        </div>
-        
-        {/* System Notification Permission Section */}
-        <div className="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-100 dark:border-slate-600">
-          <div className="flex items-start gap-2 mb-2">
-             <Bell className={`w-4 h-4 mt-0.5 ${permission === 'granted' ? 'text-green-500' : 'text-gray-400'}`} />
-             <div>
-                <span className="text-xs font-bold text-gray-700 dark:text-gray-200 block">시스템 알림 사용 (Native Notification)</span>
-                <span className="text-[10px] text-gray-500 dark:text-gray-400 leading-tight">
-                   모바일 기기의 기본 알림음과 진동을 사용하려면 권한이 필요합니다.<br/>
-                   (iOS는 홈 화면에 추가 후 사용 가능)
-                </span>
-             </div>
-          </div>
-          
-          {permission !== 'granted' ? (
-             <button 
-               onClick={handleRequestPermission}
-               className="w-full mt-2 py-2 bg-brand-600 text-white text-xs font-bold rounded-md hover:bg-brand-700 active:scale-95 transition-all shadow-sm"
-             >
-               시스템 알림 권한 요청하기
-             </button>
-          ) : (
-             <div className="mt-2 flex items-center justify-between">
-                <span className="text-[10px] font-bold text-green-600 dark:text-green-400 flex items-center gap-1">
-                   <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span> 권한 허용됨 (Active)
-                </span>
-                {/* Re-request logic typically not needed if granted, but keeps UI clean */}
-             </div>
-          )}
+        <button 
+             onClick={handleTestSound}
+             className="w-full text-xs font-bold text-slate-600 dark:text-slate-300 flex items-center justify-center gap-2 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700 py-3 rounded-xl transition-colors active:scale-95"
+           >
+             <Play className="w-3.5 h-3.5 fill-current" />
+             알림음 테스트 (Sound Check)
+        </button>
+      </div>
+
+      {/* System Settings Card */}
+      <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+        <div className="flex items-center gap-2 mb-4">
+           <div className="p-2 bg-amber-100 dark:bg-amber-900/30 rounded-lg text-amber-600 dark:text-amber-400">
+              <Zap className="w-5 h-5" />
+           </div>
+           <h3 className="font-black text-slate-800 dark:text-white text-lg">시스템 설정</h3>
         </div>
 
-        <div className="mt-4 pt-4 border-t border-gray-100 dark:border-slate-700 flex justify-end">
-           <button 
-             onClick={handleTestSound}
-             className="text-xs font-bold text-brand-600 dark:text-brand-400 flex items-center gap-1 hover:bg-brand-50 dark:hover:bg-brand-900/30 px-3 py-1.5 rounded-lg transition-colors"
-           >
-             <Play className="w-3 h-3 fill-current" />
-             소리 및 알림 테스트
-           </button>
+        <div className="space-y-4">
+            {/* Background Mode */}
+            <div className="flex items-start justify-between">
+                <div className="flex flex-col pr-4">
+                    <span className="text-sm font-bold text-slate-700 dark:text-slate-200">
+                    백그라운드 실행 유지
+                    </span>
+                    <span className="text-[10px] text-slate-400 mt-1 leading-snug">
+                    화면 꺼짐 방지 및 백그라운드 타이머 작동을 위해 무음 오디오를 재생합니다.
+                    </span>
+                </div>
+                <button 
+                    onClick={toggleBackgroundKeepAlive}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none shrink-0 ${
+                    isBackgroundKeepAlive ? 'bg-amber-500' : 'bg-slate-200 dark:bg-slate-600'
+                    }`}
+                >
+                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow-sm ${
+                    isBackgroundKeepAlive ? 'translate-x-6' : 'translate-x-1'
+                    }`} />
+                </button>
+            </div>
+
+            {/* Notification Permission */}
+            <div className="pt-4 border-t border-slate-100 dark:border-slate-700">
+                <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
+                        <Bell className="w-3.5 h-3.5" /> 시스템 알림 권한
+                    </span>
+                    {permission === 'granted' ? (
+                        <span className="text-[10px] font-bold text-green-600 dark:text-green-400 flex items-center gap-1 bg-green-50 dark:bg-green-900/20 px-2 py-0.5 rounded-full">
+                            <CheckCircle2 className="w-3 h-3" /> 허용됨
+                        </span>
+                    ) : (
+                        <span className="text-[10px] font-bold text-slate-400 bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded-full">
+                            미허용
+                        </span>
+                    )}
+                </div>
+                
+                {permission !== 'granted' && (
+                    <button 
+                    onClick={handleRequestPermission}
+                    className="w-full mt-2 py-2.5 bg-slate-800 dark:bg-slate-700 text-white text-xs font-bold rounded-xl hover:bg-slate-700 dark:hover:bg-slate-600 active:scale-95 transition-all shadow-md"
+                    >
+                    권한 요청하기
+                    </button>
+                )}
+            </div>
         </div>
       </div>
-      
-      <div className="px-1 flex flex-col gap-1">
-        <p className="text-[10px] text-gray-400 dark:text-gray-500">
-          * iOS/Android 모바일 기기에서는 무음 모드가 해제되어 있어야 소리가 들립니다.
-        </p>
-        <p className="text-[10px] text-gray-400 dark:text-gray-500 flex items-start gap-1">
-          <AlertTriangle className="w-3 h-3 shrink-0 text-amber-500" />
-          <span>iOS(아이폰)에서는 반드시 <strong>'공유 {'>'} 홈 화면에 추가'</strong>를 통해 앱을 설치해야 네이티브 진동/알림이 작동합니다.</span>
+
+      {/* Info Footer */}
+      <div className="p-3 bg-slate-100 dark:bg-slate-900 rounded-xl flex items-start gap-2">
+        <AlertTriangle className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
+        <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed">
+          <strong>iOS(아이폰) 주의사항:</strong> 브라우저 정책상 <strong>'홈 화면에 추가'</strong>를 통해 설치된 앱에서만 백그라운드 알림 및 진동이 정상 작동합니다. 반드시 무음 모드를 해제해주세요.
         </p>
       </div>
     </div>

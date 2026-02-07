@@ -1,123 +1,12 @@
 
 import React, { memo, useState } from 'react';
-import { CheckCircle, Settings, Pause, Play } from 'lucide-react';
 import { BedState, BedStatus, TreatmentStep } from '../types';
-import { formatTime } from '../utils/bedUtils';
-import { getBedHeaderStyles, getBedNumberColor } from '../utils/styleUtils';
+import { getBedHeaderStyles } from '../utils/styleUtils';
 import { useTreatmentContext } from '../contexts/TreatmentContext';
 import { TimerEditPopup } from './bed-card/TimerEditPopup';
 import { BedStatusPopup } from './bed-card/BedStatusPopup';
-import { BedStatusBadges } from './BedStatusBadges';
-
-// --- Sub-Components ---
-
-const BedNumberAndStatus = memo(({ bed, onMovePatient, onEditStatus }: { bed: BedState; onMovePatient: (e: React.MouseEvent) => void; onEditStatus: (e: React.MouseEvent) => void }) => {
-  const isBedT = bed.id === 11;
-  return (
-    <div className="flex items-center gap-2">
-      {/* Bed Number */}
-      <div 
-        className="flex items-center justify-center cursor-pointer active:scale-95 transition-transform select-none"
-        onDoubleClick={onMovePatient}
-        title="더블클릭하여 환자 이동"
-      >
-        <span className={`font-black tracking-tighter leading-none text-3xl lg:text-5xl ${getBedNumberColor(bed)}`}>
-          {isBedT ? 'T' : bed.id}
-        </span>
-      </div>
-
-      {/* Status Icons Area */}
-      <div 
-        className="flex items-center cursor-pointer p-1 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
-        onDoubleClick={onEditStatus}
-        title="더블클릭하여 상태 아이콘 설정"
-      >
-        <BedStatusBadges bed={bed} />
-      </div>
-    </div>
-  );
-});
-
-const BedTimer = memo(({ 
-  bed, 
-  isTimerActive, 
-  isOvertime, 
-  isNearEnd, 
-  onTimerClick, 
-  onTogglePause 
-}: { 
-  bed: BedState; 
-  isTimerActive: boolean; 
-  isOvertime: boolean; 
-  isNearEnd: boolean; 
-  onTimerClick: (e: React.MouseEvent) => void; 
-  onTogglePause: (e: React.MouseEvent) => void;
-}) => {
-  if (!isTimerActive) {
-    if (bed.status === BedStatus.COMPLETED) {
-      return (
-        <div className="flex items-center gap-1 lg:gap-1.5 px-2 py-1 lg:px-3 lg:py-1.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full shadow-sm scale-[0.95] lg:scale-100 origin-right lg:origin-center">
-          <CheckCircle className="w-4 h-4 lg:w-5 lg:h-5" />
-          <span className="text-xs lg:text-sm font-bold">완료</span>
-        </div>
-      );
-    }
-    return null;
-  }
-
-  return (
-    <div 
-      className={`flex items-center gap-2 lg:gap-3 cursor-pointer transition-all scale-[0.95] lg:scale-100 origin-right lg:origin-center ${bed.isPaused ? 'opacity-50 grayscale' : ''}`}
-    >
-      {/* Timer Text */}
-      <span 
-        onDoubleClick={onTimerClick}
-        className={`font-mono font-black text-2xl lg:text-4xl tracking-tight leading-none tabular-nums ${
-        isOvertime ? 'text-red-500 animate-pulse' : 
-        isNearEnd ? 'text-orange-500 animate-pulse' :
-        'text-slate-700 dark:text-slate-200'
-      }`}>
-        {isOvertime && '+'}{formatTime(bed.remainingTime)}
-      </span>
-
-      {/* Pause Button */}
-      <button 
-        onClick={onTogglePause}
-        className={`p-1.5 lg:p-2 rounded-full transition-colors active:scale-90 shadow-sm ${
-          bed.isPaused 
-            ? 'bg-brand-500 text-white' 
-            : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600'
-        }`}
-      >
-        {bed.isPaused ? <Play className="w-3.5 h-3.5 lg:w-4 lg:h-4 fill-current" /> : <Pause className="w-3.5 h-3.5 lg:w-4 lg:h-4 fill-current" />}
-      </button>
-    </div>
-  );
-});
-
-const BedHeaderActions = memo(({ 
-  bed, 
-  onEditClick 
-}: { 
-  bed: BedState; 
-  onEditClick: (id: number) => void; 
-}) => {
-  if (bed.status === BedStatus.IDLE) return null;
-
-  return (
-    <>
-      {/* Settings Button: Hidden on Mobile (md:hidden), Visible on Tablet/Desktop (md:block) */}
-      <button 
-        onClick={(e) => { e.stopPropagation(); onEditClick(bed.id); }}
-        className="hidden md:block p-1.5 lg:p-2 translate-x-1 lg:translate-x-0 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 bg-transparent hover:bg-slate-100 dark:hover:bg-slate-700/50 rounded-xl transition-colors active:scale-90 scale-[0.95] lg:scale-100 origin-right"
-      >
-        <Settings className="w-5 h-5 lg:w-6 lg:h-6" />
-      </button>
-    </>
-  );
-});
-
-// --- Main Component ---
+import { BedNumberAndStatus } from './bed-card/BedNumberAndStatus';
+import { BedTimer } from './bed-card/BedTimer';
 
 interface BedHeaderProps {
   bed: BedState;
@@ -183,7 +72,6 @@ export const BedHeader = memo(({
   const handleStatusDoubleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    // Open Status Edit Popup instead of full settings
     setIsEditingStatus(true);
   };
 
@@ -208,11 +96,6 @@ export const BedHeader = memo(({
             isNearEnd={isNearEnd}
             onTimerClick={handleTimerDoubleClick}
             onTogglePause={handleTogglePause}
-          />
-
-          <BedHeaderActions 
-            bed={bed}
-            onEditClick={onEditClick!}
           />
         </div>
       </div>

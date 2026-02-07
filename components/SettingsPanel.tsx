@@ -1,3 +1,4 @@
+
 import React, { useState, Suspense } from 'react';
 import { X, Database, List, Settings as SettingsIcon, Sliders, Loader2 } from 'lucide-react';
 import { Preset } from '../types';
@@ -22,69 +23,67 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
   onUpdatePresets,
   onResetAllBeds
 }) => {
-  const [activeTab, setActiveTab] = useState<'connection' | 'presets' | 'preferences'>('connection');
+  const [activeTab, setActiveTab] = useState<'connection' | 'presets' | 'preferences'>('presets');
   
   return (
-    <div className={`fixed inset-y-0 left-0 w-full sm:w-[600px] bg-white dark:bg-slate-800 shadow-2xl transform transition-transform duration-300 z-[60] ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+    <div className={`fixed inset-y-0 left-0 w-full sm:w-[550px] bg-slate-50 dark:bg-slate-950 shadow-2xl transform transition-transform duration-300 z-[60] ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
       <div className="h-full flex flex-col">
-        {/* Header: Added safe-area padding to prevent status bar overlap */}
-        <div className="bg-brand-600 text-white shrink-0 pt-[env(safe-area-inset-top)]">
-          <div className="p-4 border-b border-brand-500 flex justify-between items-center h-14 sm:h-auto">
-            <h2 className="text-xl font-bold flex items-center gap-2">
-              <SettingsIcon className="w-5 h-5" />
-              설정 및 관리
-            </h2>
-            <button onClick={onClose} className="p-2 hover:bg-brand-700 rounded-full transition-colors">
-              <X className="w-6 h-6" />
+        
+        {/* Header: Glassmorphism Style */}
+        <div className="shrink-0 pt-[env(safe-area-inset-top)] bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/50 dark:border-slate-800/50 z-20">
+          <div className="flex items-center justify-between p-4 sm:p-5">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-slate-100 dark:bg-slate-800 rounded-xl text-slate-500 dark:text-slate-400">
+                <SettingsIcon className="w-6 h-6" strokeWidth={2.5} />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest leading-none mb-0.5">
+                  CONFIGURATION
+                </span>
+                <h2 className="text-2xl font-black text-slate-800 dark:text-white leading-none tracking-tight">
+                  설정 및 관리
+                </h2>
+              </div>
+            </div>
+            <button 
+              onClick={onClose}
+              className="p-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-full transition-colors text-slate-500"
+            >
+              <X className="w-5 h-5" strokeWidth={2.5} />
             </button>
+          </div>
+
+          {/* Segmented Tabs */}
+          <div className="px-4 pb-4">
+            <div className="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-xl">
+              {[
+                { id: 'presets', label: '처방 관리', icon: List },
+                { id: 'preferences', label: '기본 설정', icon: Sliders },
+                { id: 'connection', label: '데이터 연동', icon: Database },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id as any)}
+                  className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-xs font-bold transition-all duration-200 ${
+                    activeTab === tab.id
+                      ? 'bg-white dark:bg-slate-700 text-brand-600 dark:text-brand-400 shadow-sm'
+                      : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300'
+                  }`}
+                >
+                  <tab.icon className="w-3.5 h-3.5" strokeWidth={2.5} />
+                  <span className={`${activeTab === tab.id ? 'inline' : 'hidden sm:inline'}`}>{tab.label}</span>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Tabs */}
-        <div className="flex border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 shrink-0">
-           <button 
-             onClick={() => setActiveTab('connection')}
-             className={`flex-1 py-3 text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-colors ${
-               activeTab === 'connection' 
-                 ? 'text-brand-600 border-b-2 border-brand-600 dark:text-brand-400 dark:border-brand-400 bg-brand-50/50 dark:bg-slate-700/50' 
-                 : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-700'
-             }`}
-           >
-             <Database className="w-4 h-4" />
-             <span className="hidden xs:inline">데이터</span>
-             <span className="xs:hidden">DB</span>
-           </button>
-           <button 
-             onClick={() => setActiveTab('presets')}
-             className={`flex-1 py-3 text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-colors ${
-               activeTab === 'presets' 
-                 ? 'text-brand-600 border-b-2 border-brand-600 dark:text-brand-400 dark:border-brand-400 bg-brand-50/50 dark:bg-slate-700/50' 
-                 : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-700'
-             }`}
-           >
-             <List className="w-4 h-4" />
-             <span className="hidden xs:inline">처방 목록</span>
-             <span className="xs:hidden">처방</span>
-           </button>
-           <button 
-             onClick={() => setActiveTab('preferences')}
-             className={`flex-1 py-3 text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-colors ${
-               activeTab === 'preferences' 
-                 ? 'text-brand-600 border-b-2 border-brand-600 dark:text-brand-400 dark:border-brand-400 bg-brand-50/50 dark:bg-slate-700/50' 
-                 : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-700'
-             }`}
-           >
-             <Sliders className="w-4 h-4" />
-             <span className="hidden xs:inline">기본 설정</span>
-             <span className="xs:hidden">설정</span>
-           </button>
-        </div>
-
-        {/* Content */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-6 bg-gray-50/30 dark:bg-slate-900/30">
+        {/* Content Area */}
+        <div className="flex-1 overflow-y-auto custom-scrollbar p-3 sm:p-5 relative">
           <Suspense fallback={
-            <div className="flex items-center justify-center h-40">
-              <Loader2 className="w-8 h-8 text-brand-500/50 animate-spin" />
+            <div className="flex flex-col items-center justify-center h-full gap-3 opacity-50">
+              <Loader2 className="w-8 h-8 text-brand-500 animate-spin" />
+              <span className="text-xs font-bold text-slate-400">로딩 중...</span>
             </div>
           }>
             {activeTab === 'connection' && (
@@ -107,9 +106,12 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
           </Suspense>
         </div>
         
-        {/* Footer: Added safe-area padding for bottom */}
-        <div className="p-3 border-t border-gray-200 dark:border-slate-700 text-center text-[10px] text-gray-400 bg-white dark:bg-slate-800 shrink-0 pb-[calc(env(safe-area-inset-bottom)+0.75rem)]">
-          PhysioTrack Pro v2.0
+        {/* Footer */}
+        <div className="p-4 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0 pb-[calc(env(safe-area-inset-bottom)+1rem)]">
+          <div className="flex items-center justify-between text-[10px] font-bold text-slate-400">
+             <span>PhysioTrack Pro v2.1</span>
+             <span>Designed for Efficiency</span>
+          </div>
         </div>
       </div>
     </div>

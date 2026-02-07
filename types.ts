@@ -80,3 +80,11 @@ export interface BedLayoutProps {
   beds: BedState[];
   presets: Preset[];
 }
+
+export interface SelectPresetOptions {
+  isInjection?: boolean;
+  isFluid?: boolean;
+  isTraction?: boolean;
+  isESWT?: boolean;
+  isManual?: boolean;
+}

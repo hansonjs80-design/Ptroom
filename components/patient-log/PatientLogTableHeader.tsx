@@ -8,7 +8,7 @@ export const PatientLogTableHeader: React.FC = () => {
         <th className="py-3 px-1 text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider w-[30px] md:w-[40px] text-center">
           No.
         </th>
-        <th className="py-3 px-1 text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider w-[55px] md:w-[110px] xl:w-[90px] text-center">
+        <th className="py-3 px-1 text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider w-[55px] md:w-[95px] xl:w-[75px] text-center">
           이름
         </th>
         <th className="py-3 px-1 text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider w-[55px] md:w-[120px] xl:w-[90px] text-center">

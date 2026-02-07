@@ -73,11 +73,11 @@ export const BedFooter = memo(({ bed, steps, onNext, onPrev, onClear, trashState
            <SkipBack className="w-6 h-6" /> 
          </FooterButton>
          
-         {/* Settings Button: Visible ONLY on Mobile (< md) */}
+         {/* Settings Button: Visible on All Devices */}
          {onEditClick && (
            <FooterButton
              onClick={() => onEditClick(bed.id)}
-             className="flex-1 md:hidden bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
+             className="flex-1 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
              title="설정"
            >
              <Settings className="w-6 h-6" />

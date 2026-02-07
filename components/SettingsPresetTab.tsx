@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Preset, QuickTreatment } from '../types';
 import { PresetList } from './settings/PresetList';
@@ -52,36 +53,33 @@ export const SettingsPresetTab: React.FC<SettingsPresetTabProps> = ({ presets, o
   };
 
   return (
-    <div className="flex flex-col h-full">
-      {/* Sub Tabs */}
-      <div className="flex items-center gap-2 p-1 bg-gray-100 dark:bg-slate-700/50 rounded-lg mb-4 shrink-0">
-        <button
-          onClick={() => setSubTab('presets')}
-          className={`flex-1 py-1.5 text-xs font-bold rounded-md transition-all ${
-            subTab === 'presets' 
-              ? 'bg-white dark:bg-slate-600 text-brand-600 dark:text-brand-400 shadow-sm' 
-              : 'text-gray-500 dark:text-gray-400 hover:text-gray-700'
-          }`}
-        >
-          세트 처방 (Presets)
-        </button>
-        <button
-          onClick={() => setSubTab('quick')}
-          className={`flex-1 py-1.5 text-xs font-bold rounded-md transition-all ${
-            subTab === 'quick' 
-              ? 'bg-white dark:bg-slate-600 text-brand-600 dark:text-brand-400 shadow-sm' 
-              : 'text-gray-500 dark:text-gray-400 hover:text-gray-700'
-          }`}
-        >
-          단일 치료 (Single)
-        </button>
+    <div className="flex flex-col h-full animate-in fade-in duration-300">
+      {/* Sub Tabs Pill Style */}
+      <div className="flex justify-center mb-4 shrink-0">
+        <div className="flex p-1 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 w-full sm:w-auto">
+          <button
+            onClick={() => setSubTab('presets')}
+            className={`flex-1 sm:w-32 py-1.5 text-xs font-bold rounded-lg transition-all ${
+              subTab === 'presets' 
+                ? 'bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-white shadow-sm ring-1 ring-black/5' 
+                : 'text-slate-400 hover:text-slate-600'
+            }`}
+          >
+            세트 처방
+          </button>
+          <button
+            onClick={() => setSubTab('quick')}
+            className={`flex-1 sm:w-32 py-1.5 text-xs font-bold rounded-lg transition-all ${
+              subTab === 'quick' 
+                ? 'bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-white shadow-sm ring-1 ring-black/5' 
+                : 'text-slate-400 hover:text-slate-600'
+            }`}
+          >
+            단일 치료
+          </button>
+        </div>
       </div>
 
-      {/* 
-        Fix: Removed 'overflow-hidden' to allow child components (Editors) 
-        to manage their own scroll areas and height. 
-        Added 'min-h-0' for flex nesting.
-      */}
       <div className="flex-1 h-full min-h-0 relative">
         {subTab === 'presets' ? (
           <>

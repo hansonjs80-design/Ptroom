@@ -134,7 +134,7 @@ export const TreatmentPreview: React.FC<TreatmentPreviewProps> = ({
           추가 (Add)
         </p>
         <div className="flex flex-wrap gap-2">
-          {quickTreatments.slice(0, 6).map((item) => (
+          {quickTreatments.map((item) => (
             <button
               key={item.id}
               onClick={() => addTreatment(item)}

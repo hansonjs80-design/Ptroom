@@ -129,8 +129,8 @@ export const getBedCardStyles = (bed: BedState, isOvertime: boolean, isNearEnd: 
      // 완료 상태
      statusClasses = "bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 shadow-sm opacity-90";
   } else if (isOvertime) {
-     // 초과 상태 (빨강)
-     statusClasses = "bg-white dark:bg-slate-800 ring-2 ring-red-500 shadow-[0_0_15px_rgba(239,68,68,0.3)] z-10";
+     // 초과 상태 (빨강, 깜빡임 추가) - animate-pulse 추가
+     statusClasses = "bg-white dark:bg-slate-800 ring-2 ring-red-500 shadow-[0_0_15px_rgba(239,68,68,0.3)] z-10 animate-pulse";
   } else if (isNearEnd) {
      // 1분 이하 남음 (주황, 깜빡임)
      statusClasses = "bg-white dark:bg-slate-800 ring-2 ring-orange-500 shadow-[0_0_15px_rgba(249,115,22,0.3)] z-10 animate-pulse";
