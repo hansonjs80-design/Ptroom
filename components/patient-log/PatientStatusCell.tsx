@@ -22,10 +22,24 @@ export const PatientStatusCell: React.FC<PatientStatusCellProps> = ({
 }) => {
   const [menuPos, setMenuPos] = useState<{x: number, y: number} | null>(null);
 
-  const handleDoubleClick = (e: React.MouseEvent) => {
+  const executeInteraction = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setMenuPos({ x: e.clientX, y: e.clientY });
+  };
+
+  const handleSingleClick = (e: React.MouseEvent) => {
+    // Desktop/Tablet (>= 768px): Single Click triggers action
+    if (window.innerWidth >= 768) {
+      executeInteraction(e);
+    }
+  };
+
+  const handleDoubleClick = (e: React.MouseEvent) => {
+    // Mobile (< 768px): Double Click triggers action
+    if (window.innerWidth < 768) {
+      executeInteraction(e);
+    }
   };
 
   const toggleStatus = async (key: keyof PatientVisit) => {
@@ -58,8 +72,9 @@ export const PatientStatusCell: React.FC<PatientStatusCellProps> = ({
     <>
         <div 
             className="w-full h-full flex items-center justify-center cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors group"
+            onClick={handleSingleClick}
             onDoubleClick={handleDoubleClick}
-            title={`더블클릭하여 상태 변경 (${rowStatus === 'active' ? '배드 연동' : '로그만 수정'})`}
+            title={`클릭하여 상태 변경 (${rowStatus === 'active' ? '배드 연동' : '로그만 수정'})`}
         >
             {hasActiveStatus ? (
                 <PatientStatusIcons visit={visit!} />

@@ -73,7 +73,7 @@ export const TreatmentSelectorCell: React.FC<TreatmentSelectorCellProps> = ({
     setHoverInfo(null);
   };
 
-  const handleDoubleClick = (e: React.MouseEvent) => {
+  const executeInteraction = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
     setHoverInfo(null); // Clear tooltip on interaction
@@ -100,6 +100,20 @@ export const TreatmentSelectorCell: React.FC<TreatmentSelectorCellProps> = ({
     // 4. Fallback -> Show Menu
     setMenuPos({ x: e.clientX, y: e.clientY });
     setMode('menu');
+  };
+
+  const handleSingleClick = (e: React.MouseEvent) => {
+    // Desktop/Tablet (>= 768px): Single Click triggers action
+    if (window.innerWidth >= 768) {
+      executeInteraction(e);
+    }
+  };
+
+  const handleDoubleClick = (e: React.MouseEvent) => {
+    // Mobile (< 768px): Double Click triggers action
+    if (window.innerWidth < 768) {
+      executeInteraction(e);
+    }
   };
 
   const handleStepButtonClick = (e: React.MouseEvent, type: 'prev' | 'next' | 'clear') => {
@@ -152,9 +166,9 @@ export const TreatmentSelectorCell: React.FC<TreatmentSelectorCellProps> = ({
   };
 
   const getTitle = () => {
-      if (directSelector || (rowStatus as string) === 'active') return "더블클릭하여 처방 수정";
-      if (value && (rowStatus as string) !== 'active') return "더블클릭하여 로그 수정 (배드 미작동)";
-      return "더블클릭하여 수정 옵션 열기";
+      if (directSelector || (rowStatus as string) === 'active') return "클릭하여 처방 수정";
+      if (value && (rowStatus as string) !== 'active') return "클릭하여 로그 수정 (배드 미작동)";
+      return "클릭하여 수정 옵션 열기";
   };
 
   const getPopupMessage = () => {
@@ -171,6 +185,7 @@ export const TreatmentSelectorCell: React.FC<TreatmentSelectorCellProps> = ({
         <div 
           ref={cellRef}
           className="relative w-full h-full"
+          onClick={handleSingleClick}
           onDoubleClick={handleDoubleClick}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}

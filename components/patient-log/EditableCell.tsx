@@ -41,13 +41,11 @@ export const EditableCell: React.FC<EditableCellProps> = ({
     }
   }, [mode, value]);
 
-  const handleDoubleClick = (e: React.MouseEvent) => {
+  const executeInteraction = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
 
     if (directEdit) {
-      // If directEdit is true, we skip the menu.
-      // syncOnDirectEdit determines if we update the Bed Card (false for skipSync) or Log Only (true for skipSync)
       setSkipSync(!syncOnDirectEdit); 
       setMode('edit');
       return;
@@ -55,6 +53,20 @@ export const EditableCell: React.FC<EditableCellProps> = ({
     
     setMenuPos({ x: e.clientX, y: e.clientY });
     setMode('menu');
+  };
+
+  const handleSingleClick = (e: React.MouseEvent) => {
+    // Desktop/Tablet (>= 768px): Single Click triggers action
+    if (window.innerWidth >= 768) {
+      executeInteraction(e);
+    }
+  };
+
+  const handleDoubleClick = (e: React.MouseEvent) => {
+    // Mobile (< 768px): Double Click triggers action
+    if (window.innerWidth < 768) {
+      executeInteraction(e);
+    }
   };
 
   const handleOptionClick = (shouldSkipSync: boolean) => {
@@ -101,9 +113,10 @@ export const EditableCell: React.FC<EditableCellProps> = ({
   return (
     <>
       <div 
+        onClick={handleSingleClick}
         onDoubleClick={handleDoubleClick}
         className={`w-full h-full px-2 py-1 flex items-center cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors text-sm truncate ${!value ? 'text-gray-300 italic' : ''} ${className}`}
-        title={directEdit ? "더블클릭하여 바로 수정" : "더블클릭하여 수정 옵션 열기"}
+        title={directEdit ? "클릭하여 수정" : "클릭하여 옵션 열기"}
       >
         {value || placeholder}
       </div>
