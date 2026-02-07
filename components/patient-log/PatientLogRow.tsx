@@ -3,7 +3,7 @@ import React, { memo } from 'react';
 import { Trash2 } from 'lucide-react';
 import { EditableCell } from './EditableCell';
 import { BedSelectorCell } from './BedSelectorCell';
-import { TreatmentSelectorCell } from './TreatmentSelectorCell'; 
+import { TreatmentSelectorCell } from './TreatmentSelectorCell';
 import { PatientStatusCell } from './PatientStatusCell';
 import { PatientVisit } from '../../types';
 
@@ -46,72 +46,72 @@ export const PatientLogRow: React.FC<PatientLogRowProps> = memo(({
   onPrevStep,
   onClearBed
 }) => {
-  
+
   const handleAssign = async (newBedId: number) => {
     if (isDraft && onCreate) {
-       await onCreate({ bed_id: newBedId });
+      await onCreate({ bed_id: newBedId });
     } else if (!isDraft && visit && onUpdate) {
-       onUpdate(visit.id, { bed_id: newBedId });
+      onUpdate(visit.id, { bed_id: newBedId });
     }
   };
 
   const handleMove = (newBedId: number) => {
     if (!isDraft && visit && visit.bed_id && onMovePatient) {
-        onMovePatient(visit.id, visit.bed_id, newBedId);
+      onMovePatient(visit.id, visit.bed_id, newBedId);
     }
   };
 
   const handleUpdateLogOnly = (newBedId: number) => {
-      if (!isDraft && visit && onUpdate) {
-          onUpdate(visit.id, { bed_id: newBedId }, true);
-      }
+    if (!isDraft && visit && onUpdate) {
+      onUpdate(visit.id, { bed_id: newBedId }, true);
+    }
   };
 
   const handleChange = async (field: keyof PatientVisit, value: string, skipSync: boolean) => {
-     if (isDraft && onCreate) {
-        await onCreate({ [field]: value });
-     } else if (!isDraft && visit && onUpdate) {
-        onUpdate(visit.id, { [field]: value }, skipSync);
-     }
+    if (isDraft && onCreate) {
+      await onCreate({ [field]: value });
+    } else if (!isDraft && visit && onUpdate) {
+      onUpdate(visit.id, { [field]: value }, skipSync);
+    }
   };
 
   const handleTreatmentTextCommit = async (val: string) => {
-     if (isDraft && onCreate) {
-        await onCreate({ treatment_name: val });
-        return;
-     } 
-     
-     if (!isDraft && visit && onUpdate) {
-        const isAssignmentMode = !!visit.bed_id && (!visit.treatment_name || visit.treatment_name.trim() === '');
-        onUpdate(visit.id, { treatment_name: val }, !isAssignmentMode);
-     }
+    if (isDraft && onCreate) {
+      await onCreate({ treatment_name: val });
+      return;
+    }
+
+    if (!isDraft && visit && onUpdate) {
+      const isAssignmentMode = !!visit.bed_id && (!visit.treatment_name || visit.treatment_name.trim() === '');
+      onUpdate(visit.id, { treatment_name: val }, !isAssignmentMode);
+    }
   };
 
   const handleTreatmentSelectorOpen = async () => {
-     if (rowStatus === 'active' && visit && visit.bed_id && onEditActive) {
-         onEditActive(visit.bed_id);
-         return;
-     }
+    if (rowStatus === 'active' && visit && visit.bed_id && onEditActive) {
+      onEditActive(visit.bed_id);
+      return;
+    }
 
-     if (isDraft && onCreate) {
-        const newId = await onCreate({});
-        if (onSelectLog) onSelectLog(newId);
-        return;
-     } 
-     
-     if (!isDraft && visit && onSelectLog) {
-        if (visit.bed_id && (!visit.treatment_name || visit.treatment_name.trim() === '')) {
-            onSelectLog(visit.id, visit.bed_id); 
-        } 
-        else {
-            onSelectLog(visit.id, null); 
-        }
-     }
+    if (isDraft && onCreate) {
+      const newId = await onCreate({});
+      if (onSelectLog) onSelectLog(newId);
+      return;
+    }
+
+    if (!isDraft && visit && onSelectLog) {
+      if (visit.bed_id && (!visit.treatment_name || visit.treatment_name.trim() === '')) {
+        onSelectLog(visit.id, visit.bed_id);
+      }
+      else {
+        onSelectLog(visit.id, null);
+      }
+    }
   };
 
   // Styling Update: Compact, Clean, matching Bed Card logic
-  let rowClasses = 'group transition-all border-b border-gray-100 dark:border-slate-800 h-[36px] '; 
-  
+  let rowClasses = 'group transition-all border-b border-gray-100 dark:border-slate-800 h-[36px] ';
+
   if (rowStatus === 'active') {
     rowClasses += 'bg-blue-50/50 dark:bg-blue-900/10 hover:bg-blue-50 dark:hover:bg-blue-900/20';
   } else if (rowStatus === 'completed') {
@@ -121,13 +121,13 @@ export const PatientLogRow: React.FC<PatientLogRowProps> = memo(({
   }
 
   if (isDraft) {
-      rowClasses += ' opacity-60 hover:opacity-100';
+    rowClasses += ' opacity-60 hover:opacity-100';
   }
 
   const isNoBedAssigned = !visit?.bed_id;
   const hasTreatment = !!visit?.treatment_name && visit.treatment_name.trim() !== '';
   const isLogEditMode = !isDraft && !!visit?.bed_id && hasTreatment && rowStatus !== 'active';
-  
+
   // Dot Color Logic
   let dotColorClass = 'bg-brand-500';
   if (timerStatus === 'warning') dotColorClass = 'bg-orange-500';
@@ -137,7 +137,7 @@ export const PatientLogRow: React.FC<PatientLogRowProps> = memo(({
     <tr className={rowClasses}>
       {/* 1. Bed ID */}
       <td className="border-r border-gray-100 dark:border-slate-800 p-0 relative">
-        <BedSelectorCell 
+        <BedSelectorCell
           value={visit?.bed_id || null}
           rowStatus={rowStatus}
           hasTreatment={hasTreatment}
@@ -160,15 +160,14 @@ export const PatientLogRow: React.FC<PatientLogRowProps> = memo(({
 
       {/* 2. Patient Name */}
       <td className="border-r border-gray-100 dark:border-slate-800 p-0">
-        <EditableCell 
-          value={visit?.patient_name || ''} 
+        <EditableCell
+          value={visit?.patient_name || ''}
           placeholder={isDraft ? "새 환자" : "이름"}
           menuTitle="이름 수정 (로그만 변경)"
-          className={`bg-transparent justify-center text-center ${
-            !visit?.patient_name 
-              ? 'font-normal text-gray-300 dark:text-gray-600' 
-              : 'font-black text-slate-800 dark:text-slate-100'
-          } ${isDraft ? 'placeholder-gray-300 font-normal' : ''} text-sm`}
+          className={`bg-transparent justify-center text-center ${!visit?.patient_name
+            ? 'font-normal text-gray-300 dark:text-gray-600'
+            : 'font-black text-slate-800 dark:text-slate-100'
+            } ${isDraft ? 'placeholder-gray-300 font-normal' : ''} text-sm`}
           onCommit={(val, skipSync) => handleChange('patient_name', val || '', skipSync)}
           directEdit={true}
           syncOnDirectEdit={false}
@@ -177,12 +176,39 @@ export const PatientLogRow: React.FC<PatientLogRowProps> = memo(({
 
       {/* 3. Body Part */}
       <td className="border-r border-gray-100 dark:border-slate-800 p-0">
-        <EditableCell 
-          value={visit?.body_part || ''} 
+        <EditableCell
+          value={visit?.body_part || ''}
           placeholder={isDraft ? "부위" : ""}
           menuTitle="치료 부위 수정 (로그만 변경)"
           className="text-slate-600 dark:text-slate-400 font-bold bg-transparent justify-center text-center text-xs sm:text-sm"
-          onCommit={(val, skipSync) => handleChange('body_part', val || '', skipSync)}
+          onCommit={(val, skipSync) => {
+            // Auto Format Body Part Terms
+            const formatBodyPart = (text: string) => {
+              if (!text) return '';
+              const upperCaseTerms = ['pv', 'si', 'sij', 'tfl', 'itb', 'ls', 'lsj', 'ct', 'ctj', 'atfl', 'tmj'];
+              return text.split(' ').map(word => {
+                const lower = word.toLowerCase();
+                const cleanWord = lower.replace(/[^a-z0-9]/g, ''); // 점(.) 등을 제거하고 비교하기 위함
+
+                // 1. 전체 대문자 약어 처리
+                if (upperCaseTerms.includes(lower) || upperCaseTerms.includes(cleanWord)) {
+                  return lower.toUpperCase();
+                }
+                // 2. 방향 (rt, lt) 처리
+                if (lower === 'rt' || lower === 'rt.') return 'Rt.';
+                if (lower === 'lt' || lower === 'lt.') return 'Lt.';
+
+                // 3. 기본 Capitalize
+                if (word.length > 0) {
+                  return word.charAt(0).toUpperCase() + word.slice(1);
+                }
+                return word;
+              }).join(' ');
+            };
+
+            const formattedVal = formatBodyPart(val || '');
+            handleChange('body_part', formattedVal, skipSync);
+          }}
           directEdit={true}
           syncOnDirectEdit={false}
         />
@@ -193,7 +219,7 @@ export const PatientLogRow: React.FC<PatientLogRowProps> = memo(({
         <TreatmentSelectorCell
           visit={visit}
           value={visit?.treatment_name || ''}
-          placeholder="처방 입력..." 
+          placeholder="처방 입력..."
           rowStatus={rowStatus}
           onCommitText={handleTreatmentTextCommit}
           onOpenSelector={handleTreatmentSelectorOpen}
@@ -209,19 +235,19 @@ export const PatientLogRow: React.FC<PatientLogRowProps> = memo(({
 
       {/* 5. Status */}
       <td className="border-r border-gray-100 dark:border-slate-800 p-0">
-        <PatientStatusCell 
-            visit={visit} 
-            rowStatus={rowStatus}
-            onUpdate={onUpdate || (() => {})} 
-            isDraft={isDraft}
-            onCreate={onCreate}
+        <PatientStatusCell
+          visit={visit}
+          rowStatus={rowStatus}
+          onUpdate={onUpdate || (() => { })}
+          isDraft={isDraft}
+          onCreate={onCreate}
         />
       </td>
 
       {/* 6. Memo */}
       <td className="border-r border-gray-100 dark:border-slate-800 p-0">
-        <EditableCell 
-          value={visit?.memo || ''} 
+        <EditableCell
+          value={visit?.memo || ''}
           placeholder=""
           menuTitle="메모 수정 (로그만 변경)"
           className="text-gray-500 dark:text-gray-400 font-bold bg-transparent justify-center text-center text-xs"
@@ -233,8 +259,8 @@ export const PatientLogRow: React.FC<PatientLogRowProps> = memo(({
 
       {/* 7. Author */}
       <td className="border-r border-gray-100 dark:border-slate-800 p-0">
-        <EditableCell 
-          value={visit?.author || ''} 
+        <EditableCell
+          value={visit?.author || ''}
           placeholder="-"
           menuTitle="작성자 수정 (로그만 변경)"
           className="text-center justify-center text-gray-400 font-bold bg-transparent text-xs"
@@ -248,7 +274,7 @@ export const PatientLogRow: React.FC<PatientLogRowProps> = memo(({
       <td className="p-0 text-center">
         {!isDraft && visit && onDelete && (
           <div className="flex justify-center items-center h-full">
-            <button 
+            <button
               onClick={() => onDelete(visit.id)}
               className="opacity-0 group-hover:opacity-100 p-1.5 text-gray-400 hover:text-red-500 transition-all active:scale-90 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"
               title="삭제"
