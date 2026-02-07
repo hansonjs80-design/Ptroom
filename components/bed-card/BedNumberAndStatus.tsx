@@ -1,5 +1,6 @@
 
 import React, { memo } from 'react';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { BedState, BedStatus } from '../../types';
 import { getBedNumberColor } from '../../utils/styleUtils';
 import { BedStatusBadges } from '../BedStatusBadges';
@@ -14,10 +15,12 @@ export const BedNumberAndStatus: React.FC<BedNumberAndStatusProps> = memo(({ bed
   const isBedT = bed.id === 11;
   const isIdle = bed.status === BedStatus.IDLE;
 
+  const isDesktop = useMediaQuery('(min-width: 768px)');
+
   return (
     <div className="flex items-center gap-2">
       {/* Bed Number */}
-      <div 
+      <div
         className={`flex items-center justify-center transition-transform select-none ${isIdle ? 'cursor-default' : 'cursor-pointer active:scale-95'}`}
         onDoubleClick={isIdle ? undefined : onMovePatient}
         title={isIdle ? undefined : "더블클릭하여 환자 이동"}
@@ -28,10 +31,11 @@ export const BedNumberAndStatus: React.FC<BedNumberAndStatusProps> = memo(({ bed
       </div>
 
       {/* Status Icons Area */}
-      <div 
-        className="flex items-center cursor-pointer p-1 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
-        onDoubleClick={onEditStatus}
-        title="더블클릭하여 상태 아이콘 설정"
+      <div
+        className="flex items-center cursor-pointer p-1 pr-3 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+        onClick={isDesktop ? onEditStatus : undefined}
+        onDoubleClick={!isDesktop ? onEditStatus : undefined}
+        title={isDesktop ? "클릭하여 상태 아이콘 설정" : "더블클릭하여 상태 아이콘 설정"}
       >
         <BedStatusBadges bed={bed} />
       </div>
