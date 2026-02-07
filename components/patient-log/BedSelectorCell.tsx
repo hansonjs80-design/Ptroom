@@ -1,6 +1,7 @@
 
-import React, { useState, useRef, useEffect } from 'react';
-import { Edit3, PlayCircle, Hash } from 'lucide-react';
+import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
+import { createPortal } from 'react-dom';
+import { Edit3, PlayCircle, Hash, Check, X } from 'lucide-react';
 import { ContextMenu } from '../common/ContextMenu';
 import { BedSelectionGrid } from './BedSelectionGrid';
 
@@ -29,7 +30,10 @@ export const BedSelectorCell: React.FC<BedSelectorCellProps> = ({
 }) => {
   const [mode, setMode] = useState<'view' | 'menu' | 'edit_log' | 'edit_assign' | 'select_target'>('view');
   const [menuPos, setMenuPos] = useState({ x: 0, y: 0 });
+  const [activeConfirmPos, setActiveConfirmPos] = useState<{x: number, y: number} | null>(null);
+  
   const inputRef = useRef<HTMLInputElement>(null);
+  const popupRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if ((mode === 'edit_log' || mode === 'edit_assign') && inputRef.current) {
@@ -37,6 +41,37 @@ export const BedSelectorCell: React.FC<BedSelectorCellProps> = ({
       inputRef.current.select();
     }
   }, [mode]);
+
+  // Smart Positioning for Active Confirmation Popup
+  const getSmartPosition = (pos: {x: number, y: number}) => {
+      if (!pos) return {};
+      const WIDTH = 160; // Popup width
+      const HEIGHT = 80; // Popup height approx
+      const GAP = 10;
+      
+      let left = pos.x - (WIDTH / 2);
+      let top = pos.y - HEIGHT - GAP; // Default: Above cursor
+
+      // Screen boundaries
+      const screenW = window.innerWidth;
+      // const screenH = window.innerHeight;
+
+      // Right edge correction
+      if (left + WIDTH > screenW - GAP) {
+          left = screenW - WIDTH - GAP;
+      }
+      // Left edge correction
+      if (left < GAP) {
+          left = GAP;
+      }
+      
+      // Top edge correction (if too close to top, show below)
+      if (top < GAP) {
+          top = pos.y + GAP + 20; // Show below cursor
+      }
+
+      return { top, left, width: WIDTH };
+  };
 
   const executeInteraction = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -62,8 +97,15 @@ export const BedSelectorCell: React.FC<BedSelectorCellProps> = ({
     }
 
     if (rowStatus === 'active') {
-        if (window.confirm("방번호를 변경하시겠습니까?")) {
-            setMode('select_target');
+        // Desktop/Tablet Logic: Show Custom Popup above cursor
+        if (window.innerWidth >= 768) {
+            setActiveConfirmPos({ x: e.clientX, y: e.clientY });
+        } 
+        // Mobile Logic: Standard Confirm
+        else {
+            if (window.confirm("방번호를 변경하시겠습니까?")) {
+                setMode('select_target');
+            }
         }
         return;
     }
@@ -232,7 +274,51 @@ export const BedSelectorCell: React.FC<BedSelectorCellProps> = ({
             <span className="text-gray-300 dark:text-gray-600 text-sm xl:text-[12px] font-bold">-</span>
         )}
         </div>
+        
         {renderContent()}
+
+        {/* Active Bed Confirmation Popup (Desktop/Tablet Only) */}
+        {activeConfirmPos && createPortal(
+            <div className="fixed inset-0 z-[9999]" onClick={() => setActiveConfirmPos(null)}>
+                <div 
+                    ref={popupRef}
+                    className="absolute bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-gray-200 dark:border-slate-600 p-2.5 animate-in zoom-in-95 duration-150 flex flex-col gap-2"
+                    style={getSmartPosition(activeConfirmPos)}
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <div className="text-center">
+                        <p className="text-[11px] font-bold text-gray-800 dark:text-white leading-tight">
+                            방번호를 변경하시겠습니까?
+                        </p>
+                        <p className="text-[9px] text-gray-400 mt-0.5">
+                            현재 치료 중인 배드입니다.
+                        </p>
+                    </div>
+                    <div className="flex gap-1.5">
+                        <button 
+                            onClick={() => {
+                                setActiveConfirmPos(null);
+                                setMode('select_target');
+                            }}
+                            className="flex-1 py-1.5 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-[10px] font-bold flex items-center justify-center gap-1 shadow-sm transition-colors"
+                        >
+                            <Check className="w-3 h-3" /> 예
+                        </button>
+                        <button 
+                            onClick={() => setActiveConfirmPos(null)}
+                            className="flex-1 py-1.5 bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600 rounded-lg text-[10px] font-bold flex items-center justify-center gap-1 transition-colors"
+                        >
+                            <X className="w-3 h-3" /> 아니오
+                        </button>
+                    </div>
+                    {/* Visual caret pointing down (if positioned above) */}
+                    {activeConfirmPos.y > (getSmartPosition(activeConfirmPos).top || 0) + 50 && (
+                        <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-white dark:bg-slate-800 border-b border-r border-gray-200 dark:border-slate-600 rotate-45 transform"></div>
+                    )}
+                </div>
+            </div>,
+            document.body
+        )}
     </>
   );
 };
