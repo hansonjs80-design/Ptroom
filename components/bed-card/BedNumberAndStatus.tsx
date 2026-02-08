@@ -38,7 +38,7 @@ export const BedNumberAndStatus: React.FC<BedNumberAndStatusProps> = memo(({ bed
         onDoubleClick={!isDesktop ? onEditStatus : undefined}
         title={isDesktop ? "클릭하여 상태 아이콘 설정" : "더블클릭하여 상태 아이콘 설정"}
       >
-        <BedStatusBadges bed={bed} isDesktop={isDesktop} />
+        <BedStatusBadges bed={bed} isDesktop={isDesktop} isPortrait={isPortrait} />
       </div>
     </div>
   );
