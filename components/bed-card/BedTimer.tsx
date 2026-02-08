@@ -35,12 +35,9 @@ export const BedTimer: React.FC<BedTimerProps> = memo(({
     return null;
   }
 
-  // Calculate pixel adjustment for mobile portrait
-  const mobileShiftClass = side === 'left' ? '-translate-x-[5px]' : side === 'right' ? '-translate-x-[20px]' : '';
-
   return (
     <div
-      className={`flex items-center gap-2 lg:gap-3 cursor-pointer transition-all scale-[0.95] lg:scale-100 origin-right lg:origin-center ${mobileShiftClass} sm:translate-x-0 ${bed.isPaused ? 'opacity-50 grayscale' : ''}`}
+      className={`flex items-center gap-[10px] lg:gap-3 cursor-pointer transition-all scale-[0.95] lg:scale-100 origin-right lg:origin-center sm:translate-x-0 ${bed.isPaused ? 'opacity-50 grayscale' : ''}`}
     >
       {/* 
         Timer Text Updated: 
