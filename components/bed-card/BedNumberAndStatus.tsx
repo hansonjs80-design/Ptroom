@@ -34,7 +34,7 @@ export const BedNumberAndStatus: React.FC<BedNumberAndStatusProps> = memo(({ bed
 
       {/* Status Icons Area */}
       <div
-        className={`flex items-center cursor-pointer p-1 w-auto ${!isDesktop ? (hasStatus ? 'min-w-[15px]' : (isPortrait ? 'min-w-[42px]' : 'min-w-[21px]')) : (hasStatus ? 'lg:p-1' : 'lg:p-[10px] lg:min-w-[30px]')} h-10 lg:h-auto ${!isDesktop ? (hasStatus ? '-translate-x-[11px]' : 'translate-x-[1px]') : 'lg:translate-x-0'} ${isDesktop && !hasStatus ? 'lg:pr-[12px]' : 'lg:pr-[5px]'} rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-all overflow-visible`}
+        className={`flex items-center cursor-pointer p-1 w-auto ${!isDesktop ? (hasStatus ? 'w-fit min-w-0' : (isPortrait ? 'min-w-[42px]' : 'min-w-[21px]')) : (hasStatus ? 'lg:p-1' : 'lg:p-[10px] lg:min-w-[30px]')} ${!isDesktop && isPortrait && hasStatus ? 'h-fit' : 'h-10'} lg:h-auto ${!isDesktop ? (hasStatus ? '-translate-x-[11px]' : 'translate-x-[1px]') : 'lg:translate-x-0'} ${isDesktop && !hasStatus ? 'lg:pr-[12px]' : 'lg:pr-[5px]'} rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-all overflow-visible`}
         onClick={isDesktop ? onEditStatus : undefined}
         onDoubleClick={!isDesktop ? onEditStatus : undefined}
         title={isDesktop ? "클릭하여 상태 아이콘 설정" : "더블클릭하여 상태 아이콘 설정"}
