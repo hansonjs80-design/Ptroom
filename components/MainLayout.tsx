@@ -142,7 +142,7 @@ export const MainLayout: React.FC = () => {
             /* Base Padding */
             px-0 
             ${mainContentPadding}
-            pb-[calc(env(safe-area-inset-bottom)+1.5rem)]
+            ${isFullScreen ? 'pb-0' : 'pb-[calc(env(safe-area-inset-bottom)+1.5rem)]'}
             
             /* Tablet/Large Phone Portrait */
             sm:px-2 
@@ -161,11 +161,11 @@ export const MainLayout: React.FC = () => {
           <BedLayoutContainer beds={beds} presets={presets} />
         </main>
 
-        {/* Exit Full Screen Button - Visible only in Full Screen Mode */}
+        {/* Exit Full Screen Button - Repositioned for Mobile Portrait to avoid status bar overlap */}
         {isFullScreen && (
           <button
             onClick={() => setIsFullScreen(false)}
-            className="fixed top-4 right-4 z-[60] p-2 bg-black/30 dark:bg-white/10 text-gray-500 dark:text-gray-300 hover:text-white hover:bg-black/50 dark:hover:bg-white/20 rounded-full backdrop-blur-md shadow-lg transition-all active:scale-95"
+            className="fixed top-[132px] right-6 md:top-4 md:right-4 z-[60] p-2 bg-black/30 dark:bg-white/10 text-gray-500 dark:text-gray-300 hover:text-white hover:bg-black/50 dark:hover:bg-white/20 rounded-full backdrop-blur-md shadow-lg transition-all active:scale-95"
             title="전체 화면 종료"
           >
             <Minimize className="w-5 h-5 sm:w-6 sm:h-6" />
