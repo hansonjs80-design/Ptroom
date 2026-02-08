@@ -50,6 +50,7 @@ export const BedStatusBadges: React.FC<BedStatusBadgesProps> = memo(({ bed, isDe
   const pBed = prevProps.bed;
   const nBed = nextProps.bed;
   return (
+    prevProps.isDesktop === nextProps.isDesktop &&
     pBed.status === nBed.status &&
     pBed.isInjection === nBed.isInjection &&
     pBed.isFluid === nBed.isFluid &&
