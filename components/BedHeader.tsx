@@ -2,6 +2,7 @@
 import React, { memo, useState } from 'react';
 import { BedState, BedStatus, TreatmentStep } from '../types';
 import { getBedHeaderStyles } from '../utils/styleUtils';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 import { useTreatmentContext } from '../contexts/TreatmentContext';
 import { TimerEditPopup } from './bed-card/TimerEditPopup';
 import { BedStatusPopup } from './bed-card/BedStatusPopup';
