@@ -14,15 +14,16 @@ export const BedStatusBadges: React.FC<BedStatusBadgesProps> = memo(({ bed, isDe
   if (!hasAnyStatus(bed)) return null;
 
   const activeBadges = STATUS_BADGES.filter(b => bed[b.key]);
+  const isMultiPortrait = !isDesktop && isPortrait && activeBadges.length >= 2;
 
   return (
-    <div className="grid grid-cols-2 items-center justify-start gap-[0.25px] lg:gap-[2px] w-fit">
+    <div className={`grid grid-cols-2 items-center justify-start ${isMultiPortrait ? 'gap-[-2.75px]' : 'gap-[0.25px]'} lg:gap-[2px] w-fit`}>
       {activeBadges.map((badge) => {
         let iconSize = isDesktop ? 21.2 : 18;
 
-        // 모바일 세로 모드에서 아이콘이 2개 이상이면 10% 축소 (18 -> 16.2)
-        if (!isDesktop && isPortrait && activeBadges.length >= 2) {
-          iconSize = 16.2;
+        // 모바일 세로 모드에서 아이콘이 2개 이상이면 5% 축소 (18 -> 17.1)
+        if (isMultiPortrait) {
+          iconSize = 17.1;
         }
 
         return (
