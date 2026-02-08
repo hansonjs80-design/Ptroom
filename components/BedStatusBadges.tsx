@@ -6,9 +6,10 @@ import { hasAnyStatus } from '../utils/styleUtils';
 interface BedStatusBadgesProps {
   bed: BedState;
   isDesktop?: boolean;
+  isPortrait?: boolean;
 }
 
-export const BedStatusBadges: React.FC<BedStatusBadgesProps> = memo(({ bed, isDesktop = false }) => {
+export const BedStatusBadges: React.FC<BedStatusBadgesProps> = memo(({ bed, isDesktop = false, isPortrait = false }) => {
   if (bed.status === BedStatus.IDLE) return null;
   if (!hasAnyStatus(bed)) return null;
 
@@ -17,7 +18,13 @@ export const BedStatusBadges: React.FC<BedStatusBadgesProps> = memo(({ bed, isDe
   return (
     <div className="grid grid-cols-2 items-center justify-start gap-[0.25px] lg:gap-[2px] w-fit">
       {activeBadges.map((badge) => {
-        const iconSize = isDesktop ? 21.2 : 18;
+        let iconSize = isDesktop ? 21.2 : 18;
+
+        // 모바일 세로 모드에서 아이콘이 2개 이상이면 10% 축소 (18 -> 16.2)
+        if (!isDesktop && isPortrait && activeBadges.length >= 2) {
+          iconSize = 16.2;
+        }
+
         return (
           <div
             key={badge.label}
