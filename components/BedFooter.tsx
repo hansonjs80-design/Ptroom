@@ -1,6 +1,8 @@
-
 import React, { memo } from 'react';
 import { useMediaQuery } from '../hooks/useMediaQuery';
+import { SkipForward, SkipBack, Check, X, Settings } from 'lucide-react';
+import { BedState, BedStatus, TreatmentStep } from '../types';
+import { BedTrashButton } from './BedTrashButton';
 
 interface BedFooterProps {
   bed: BedState;
