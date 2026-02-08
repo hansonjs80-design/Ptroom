@@ -30,9 +30,9 @@ export const BedStatusBadges: React.FC<BedStatusBadgesProps> = memo(({ bed }) =>
   return (
     <div className="flex items-center gap-1">
       {activeBadges.map((badge) => (
-        <div 
-          key={badge.label} 
-          className={`flex items-center justify-center p-0.5 rounded-full bg-white/50 dark:bg-slate-700/50 shadow-sm ${badge.colorClass}`}
+        <div
+          key={badge.label}
+          className={`flex items-center justify-center p-0.5 rounded-full bg-transparent lg:bg-white/50 lg:dark:bg-slate-700/50 shadow-none lg:shadow-sm ${badge.colorClass}`}
           title={badge.label}
         >
           <badge.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" strokeWidth={2.5} />
