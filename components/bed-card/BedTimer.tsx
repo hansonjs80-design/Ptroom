@@ -37,7 +37,7 @@ export const BedTimer: React.FC<BedTimerProps> = memo(({
 
   return (
     <div
-      className={`flex items-center gap-[7px] lg:gap-3 cursor-pointer lg:transition-all lg:scale-100 lg:origin-center sm:translate-x-0 flex-nowrap shrink-0 ${bed.isPaused ? 'opacity-50 grayscale' : ''}`}
+      className={`flex items-center gap-[7px] lg:gap-[10px] cursor-pointer lg:transition-all lg:scale-100 lg:origin-center sm:translate-x-0 flex-nowrap shrink-0 ${bed.isPaused ? 'opacity-50 grayscale' : ''}`}
     >
       {/* 
         Timer Text Updated: 
