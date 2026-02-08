@@ -46,7 +46,7 @@ export const BedTimer: React.FC<BedTimerProps> = memo(({
       */}
       <span
         onDoubleClick={onTimerClick}
-        className={`font-black text-3xl md:portrait:text-4xl lg:text-5xl tracking-tighter leading-none tabular-nums w-auto lg:w-[140px] text-right inline-block ${isOvertime ? 'text-red-500 animate-pulse' :
+        className={`font-black text-3xl md:portrait:text-4xl lg:text-[43px] tracking-tighter leading-none tabular-nums w-auto lg:w-[126px] text-right inline-block ${isOvertime ? 'text-red-500 animate-pulse' :
           isNearEnd ? 'text-orange-500 animate-pulse' :
             'text-slate-700 dark:text-slate-200'
           }`}>
@@ -56,12 +56,12 @@ export const BedTimer: React.FC<BedTimerProps> = memo(({
       {/* Pause Button */}
       <button
         onClick={onTogglePause}
-        className={`shrink-0 p-1.5 lg:p-2 rounded-full transition-colors lg:active:scale-95 shadow-sm ${bed.isPaused
+        className={`shrink-0 p-1.5 lg:p-[7px] rounded-full transition-colors lg:active:scale-95 shadow-sm ${bed.isPaused
           ? 'bg-brand-500 text-white'
           : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600'
           }`}
       >
-        {bed.isPaused ? <Play className="w-3.5 h-3.5 lg:w-4 lg:h-4 fill-current" /> : <Pause className="w-3.5 h-3.5 lg:w-4 lg:h-4 fill-current" />}
+        {bed.isPaused ? <Play className="w-3.5 h-3.5 lg:w-[15px] lg:h-[15px] fill-current" /> : <Pause className="w-3.5 h-3.5 lg:w-[15px] lg:h-[15px] fill-current" />}
       </button>
     </div>
   );

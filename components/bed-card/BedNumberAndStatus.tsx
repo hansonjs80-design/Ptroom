@@ -26,7 +26,7 @@ export const BedNumberAndStatus: React.FC<BedNumberAndStatusProps> = memo(({ bed
         onDoubleClick={isIdle ? undefined : onMovePatient}
         title={isIdle ? undefined : "더블클릭하여 환자 이동"}
       >
-        <span className={`font-black tracking-tighter leading-none text-3xl md:portrait:text-4xl lg:text-5xl ${getBedNumberColor(bed)}`}>
+        <span className={`font-black tracking-tighter leading-none text-3xl md:portrait:text-4xl lg:text-[43px] ${getBedNumberColor(bed)}`}>
           {isBedT ? 'T' : bed.id}
         </span>
       </div>
