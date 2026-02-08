@@ -30,32 +30,23 @@ export const BedStatusBadges: React.FC<BedStatusBadgesProps> = memo(({ bed, isDe
 
   return (
     <div className="grid grid-cols-2 items-center justify-start gap-[0.25px] lg:gap-[2px] w-fit">
-      {activeBadges.map((badge) => (
-        <div
-          key={badge.label}
-          className={`flex items-center justify-center p-0.5 rounded-full bg-transparent shadow-none ${badge.colorClass}`}
-          title={badge.label}
-        >
-          <badge.icon
-            size={isDesktop ? 21.2 : 18}
-            className={badge.colorClass}
-            strokeWidth={2.5}
-          />
-        </div>
-      ))}
+      {activeBadges.map((badge) => {
+        const iconSize = isDesktop ? 21.2 : 18;
+        return (
+          <div
+            key={badge.label}
+            className={`flex items-center justify-center p-0.5 rounded-full bg-transparent shadow-none ${badge.colorClass}`}
+            title={badge.label}
+          >
+            <badge.icon
+              size={iconSize}
+              style={{ width: iconSize, height: iconSize }}
+              className={badge.colorClass}
+              strokeWidth={2.5}
+            />
+          </div>
+        );
+      })}
     </div>
-  );
-}, (prevProps, nextProps) => {
-  // Ignore timer updates
-  const pBed = prevProps.bed;
-  const nBed = nextProps.bed;
-  return (
-    prevProps.isDesktop === nextProps.isDesktop &&
-    pBed.status === nBed.status &&
-    pBed.isInjection === nBed.isInjection &&
-    pBed.isFluid === nBed.isFluid &&
-    pBed.isManual === nBed.isManual &&
-    pBed.isESWT === nBed.isESWT &&
-    pBed.isTraction === nBed.isTraction
   );
 });
