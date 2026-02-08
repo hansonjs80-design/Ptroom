@@ -1,5 +1,3 @@
-```typescript
-
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
@@ -13,10 +11,10 @@ interface ContextMenuProps {
   width?: number;
 }
 
-export const ContextMenu: React.FC<ContextMenuProps> = ({ 
-  title, 
-  position, 
-  onClose, 
+export const ContextMenu: React.FC<ContextMenuProps> = ({
+  title,
+  position,
+  onClose,
   children,
   width = 256 // w-64
 }) => {
@@ -31,7 +29,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
       const rect = containerRef.current.getBoundingClientRect();
       const screenW = window.innerWidth;
       const screenH = window.innerHeight;
-      
+
       let newX = position.x;
       let newY = position.y;
 
@@ -54,7 +52,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
   }, [position]);
 
   return createPortal(
-    <div 
+    <div
       className="fixed inset-0 z-[9999] bg-transparent"
       onClick={(e) => {
         e.stopPropagation();
@@ -64,8 +62,8 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
       <div
         ref={containerRef}
         className="absolute bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-gray-200 dark:border-slate-700 overflow-hidden animate-in zoom-in-95 duration-150 origin-top-left flex flex-col"
-        style={{ 
-          top: pos.y, 
+        style={{
+          top: pos.y,
           left: pos.x,
           width: width
         }}
@@ -76,8 +74,8 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
           <span className="font-bold text-gray-800 dark:text-white text-xs truncate pr-2">
             {title}
           </span>
-          <button 
-            onClick={onClose} 
+          <button
+            onClick={onClose}
             className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
           >
             <X className="w-4 h-4" />

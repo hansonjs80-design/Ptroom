@@ -14,8 +14,7 @@ interface BedMoveModalProps {
 
 export const BedMoveModal: React.FC<BedMoveModalProps> = memo(({ fromBedId, initialPos, onClose, onConfirm }) => {
   useKeyboardShortcut({
-    onEscape: onClose,
-    onEnter: onConfirm
+    onEscape: onClose
   });
 
   const { beds } = useTreatmentContext();

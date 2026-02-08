@@ -8,6 +8,7 @@ import { PatientLogTable } from './patient-log/PatientLogTable';
 import { Loader2 } from 'lucide-react';
 import { useLogStatusLogic } from '../hooks/useLogStatusLogic';
 import { BedStatus } from '../types';
+import { useKeyboardShortcut } from '../hooks/useKeyboardShortcut';
 
 const PrintPreviewModal = React.lazy(() => import('./modals/PrintPreviewModal').then(module => ({ default: module.PrintPreviewModal })));
 
@@ -18,8 +19,11 @@ interface PatientLogPanelProps {
 export const PatientLogPanel: React.FC<PatientLogPanelProps> = ({ onClose }) => {
   const { setSelectingLogId, setSelectingBedId, beds, presets, nextStep, prevStep, movePatient, updateVisitWithBedSync, setEditingBedId, clearBed } = useTreatmentContext();
   const { visits, currentDate, setCurrentDate, changeDate, addVisit, deleteVisit } = usePatientLogContext();
-  
+
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+
+  // Desktop: ESC key to close the panel
+  useKeyboardShortcut({ onEscape: onClose });
 
   // Performance Optimization: 
   // Extract status logic to prevent re-rendering on every timer tick.
@@ -30,22 +34,22 @@ export const PatientLogPanel: React.FC<PatientLogPanelProps> = ({ onClose }) => 
   };
 
   const handleMovePatient = useCallback((visitId: string, currentBedId: number, newBedId: number) => {
-      movePatient(currentBedId, newBedId);
+    movePatient(currentBedId, newBedId);
   }, [movePatient]);
 
   // Wrapper for selecting log
   const handleSelectLog = useCallback((logId: string, bedId?: number | null) => {
-      setSelectingLogId(logId);
-      // If bedId is provided (Assignment Mode), set it to trigger Bed Logic.
-      // If bedId is null/undefined (Edit Mode), reset it.
-      setSelectingBedId(bedId || null);
+    setSelectingLogId(logId);
+    // If bedId is provided (Assignment Mode), set it to trigger Bed Logic.
+    // If bedId is null/undefined (Edit Mode), reset it.
+    setSelectingBedId(bedId || null);
   }, [setSelectingLogId, setSelectingBedId]);
 
   return (
     <>
       <div className="flex flex-col h-full bg-white dark:bg-slate-900 border-l border-gray-200 dark:border-slate-800 shadow-xl print:hidden">
-        
-        <PatientLogHeader 
+
+        <PatientLogHeader
           totalCount={visits.length}
           currentDate={currentDate}
           onDateChange={changeDate}
@@ -54,7 +58,7 @@ export const PatientLogPanel: React.FC<PatientLogPanelProps> = ({ onClose }) => 
           onClose={onClose}
         />
 
-        <PatientLogTable 
+        <PatientLogTable
           visits={visits}
           beds={beds}
           presets={presets}
@@ -77,10 +81,10 @@ export const PatientLogPanel: React.FC<PatientLogPanelProps> = ({ onClose }) => 
         </div>
       </div>
 
-      <PatientLogPrintView 
-        id="native-print-target" 
-        visits={visits} 
-        currentDate={currentDate} 
+      <PatientLogPrintView
+        id="native-print-target"
+        visits={visits}
+        currentDate={currentDate}
       />
 
       {isPreviewOpen && (
@@ -89,11 +93,11 @@ export const PatientLogPanel: React.FC<PatientLogPanelProps> = ({ onClose }) => 
             <Loader2 className="w-10 h-10 text-white animate-spin" />
           </div>
         }>
-          <PrintPreviewModal 
-            isOpen={isPreviewOpen} 
-            onClose={() => setIsPreviewOpen(false)} 
-            visits={visits} 
-            currentDate={currentDate} 
+          <PrintPreviewModal
+            isOpen={isPreviewOpen}
+            onClose={() => setIsPreviewOpen(false)}
+            visits={visits}
+            currentDate={currentDate}
           />
         </Suspense>
       )}

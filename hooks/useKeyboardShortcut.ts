@@ -4,13 +4,14 @@ interface UseKeyboardShortcutProps {
     onEscape?: () => void;
     onEnter?: () => void;
     disableEnter?: boolean;
+    disableEscape?: boolean;
 }
 
-export const useKeyboardShortcut = ({ onEscape, onEnter, disableEnter = false }: UseKeyboardShortcutProps) => {
+export const useKeyboardShortcut = ({ onEscape, onEnter, disableEnter = false, disableEscape = false }: UseKeyboardShortcutProps) => {
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             // Escape Key
-            if (e.key === 'Escape' && onEscape) {
+            if (e.key === 'Escape' && onEscape && !disableEscape) {
                 e.preventDefault();
                 onEscape();
             }
