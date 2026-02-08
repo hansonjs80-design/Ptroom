@@ -1,4 +1,4 @@
-import { Preset, TreatmentStep, QuickTreatment } from './types';
+import { Preset, TreatmentStep, QuickTreatment, BedState } from './types';
 
 export const TOTAL_BEDS = 11;
 
@@ -66,4 +66,21 @@ export const DEFAULT_PRESETS: Preset[] = [
       createStep('자기장 (Magnetic)', 10, true, 'bg-purple-500'),
     ],
   }
+];
+
+import { Syringe, Hand, Zap, ArrowUpFromLine, Droplet, LucideIcon } from 'lucide-react';
+
+export interface BadgeConfig {
+  key: keyof BedState;
+  label: string;
+  icon: LucideIcon;
+  colorClass: string;
+}
+
+export const STATUS_BADGES: BadgeConfig[] = [
+  { key: 'isInjection', label: '주사', icon: Syringe, colorClass: 'text-red-500' },
+  { key: 'isFluid', label: '수액', icon: Droplet, colorClass: 'text-cyan-500' },
+  { key: 'isManual', label: '도수', icon: Hand, colorClass: 'text-violet-500' },
+  { key: 'isESWT', label: '충격파', icon: Zap, colorClass: 'text-blue-500' },
+  { key: 'isTraction', label: '견인', icon: ArrowUpFromLine, colorClass: 'text-orange-500' }
 ];

@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { BedState, BedStatus } from '../types';
-import { STATUS_BADGES } from '../constants';
+import { STATUS_BADGES, BadgeConfig } from '../constants';
 import { hasAnyStatus } from '../utils/styleUtils';
 
 interface BedStatusBadgesProps {
