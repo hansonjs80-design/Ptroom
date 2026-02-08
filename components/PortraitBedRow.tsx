@@ -6,19 +6,19 @@ import { BedBay } from './BedBay';
 interface PortraitBedRowProps extends Omit<BedLayoutProps, 'beds'> {
   leftBed: BedState | null; // Allow null for empty left slot
   rightBed: BedState | null;
-  beds: BedState[]; 
+  beds: BedState[];
 }
 
-export const PortraitBedRow: React.FC<PortraitBedRowProps> = memo(({ 
-  leftBed, 
-  rightBed, 
+export const PortraitBedRow: React.FC<PortraitBedRowProps> = memo(({
+  leftBed,
+  rightBed,
   presets
 }) => {
   return (
-    <div className="grid grid-cols-2 gap-1.5 sm:gap-5 md:gap-6">
+    <div className="grid grid-cols-2 gap-1.5 sm:gap-5 md:gap-[39px]">
       <div className="flex flex-col">
         {leftBed ? (
-          <BedBay 
+          <BedBay
             beds={[leftBed]}
             presets={presets}
             side="left"
@@ -34,7 +34,7 @@ export const PortraitBedRow: React.FC<PortraitBedRowProps> = memo(({
 
       <div className="flex flex-col">
         {rightBed ? (
-          <BedBay 
+          <BedBay
             beds={[rightBed]}
             presets={presets}
             side="right"
