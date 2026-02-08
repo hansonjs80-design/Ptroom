@@ -71,7 +71,7 @@ export const BedStepColumn: React.FC<BedStepColumnProps> = memo(({
               Font Size Adjustment:
               Reduced sizes and changed break-all to whitespace-nowrap to prevent wrapping
             */}
-          <span className={`font-black text-lg xs:text-xl sm:text-xl md:text-2xl md:portrait:text-3xl lg:text-3xl leading-none text-center whitespace-nowrap px-0.5 ${isActive ? 'scale-110 drop-shadow-sm' : 'opacity-90'}`}>
+          <span className={`font-black text-lg xs:text-xl sm:text-xl md:text-2xl md:portrait:text-3xl lg:text-4xl leading-none text-center whitespace-nowrap px-0.5 ${isActive ? 'scale-110 drop-shadow-sm' : 'opacity-90'}`}>
             {getAbbreviation(step.name)}
           </span>
 
