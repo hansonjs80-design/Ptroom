@@ -50,7 +50,7 @@ export const BedStepColumn: React.FC<BedStepColumnProps> = memo(({
 
   return (
     <>
-      <div 
+      <div
         className={`
           flex-1 flex flex-col h-full min-w-0 group/col relative transition-all duration-300
           ${isActive ? 'z-10 shadow-md transform scale-[1.02] rounded-lg my-[-1px]' : ''}
@@ -67,32 +67,32 @@ export const BedStepColumn: React.FC<BedStepColumnProps> = memo(({
             ${colorClass}
             ${isSelectedForSwap ? 'ring-4 ring-indigo-500 ring-inset shadow-inner' : ''}
         `}>
-            {/* 
+          {/* 
               Font Size Adjustment:
               Reduced sizes and changed break-all to whitespace-nowrap to prevent wrapping
             */}
-            <span className={`font-black text-sm xs:text-base sm:text-xl lg:text-2xl leading-none text-center whitespace-nowrap px-0.5 ${isActive ? 'scale-110 drop-shadow-sm' : 'opacity-90'}`}>
-              {getAbbreviation(step.name)}
-            </span>
-            
-            {/* Active Indicator Pulse */}
-            {isActive && <div className="absolute inset-0 bg-white/10 animate-pulse pointer-events-none" />}
-            
-            {/* Swap Overlay - Only covers the treatment part */}
-            {isSelectedForSwap && (
-              <div className="absolute inset-0 bg-indigo-500/90 flex items-center justify-center animate-in fade-in duration-200 z-10">
-                 <ArrowRightLeft className="w-6 h-6 sm:w-8 sm:h-8 text-white animate-bounce drop-shadow-md" strokeWidth={2.5} />
-              </div>
-            )}
+          <span className={`font-black text-sm xs:text-base sm:text-xl md:portrait:text-2xl lg:text-2xl leading-none text-center whitespace-nowrap px-0.5 ${isActive ? 'scale-110 drop-shadow-sm' : 'opacity-90'}`}>
+            {getAbbreviation(step.name)}
+          </span>
+
+          {/* Active Indicator Pulse */}
+          {isActive && <div className="absolute inset-0 bg-white/10 animate-pulse pointer-events-none" />}
+
+          {/* Swap Overlay - Only covers the treatment part */}
+          {isSelectedForSwap && (
+            <div className="absolute inset-0 bg-indigo-500/90 flex items-center justify-center animate-in fade-in duration-200 z-10">
+              <ArrowRightLeft className="w-6 h-6 sm:w-8 sm:h-8 text-white animate-bounce drop-shadow-md" strokeWidth={2.5} />
+            </div>
+          )}
         </div>
 
         {/* Memo Area - Integrated into the bottom */}
-        <div 
+        <div
           className={`
             h-[20px] sm:h-[26px] flex items-center justify-center px-1 cursor-pointer transition-colors select-none border-t border-black/5 dark:border-white/5
-            ${isActive 
-               ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-200' 
-               : 'bg-white/80 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400'
+            ${isActive
+              ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-200'
+              : 'bg-white/80 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400'
             }
           `}
           onDoubleClick={handleMemoDoubleClick}
