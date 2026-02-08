@@ -46,7 +46,7 @@ export const BedTimer: React.FC<BedTimerProps> = memo(({
       */}
       <span
         onDoubleClick={onTimerClick}
-        className={`font-black text-3xl lg:text-5xl tracking-tighter leading-none tabular-nums w-[74px] lg:w-[140px] text-right inline-block mr-1 lg:mr-2 ${isOvertime ? 'text-red-500 animate-pulse' :
+        className={`font-black text-3xl lg:text-5xl tracking-tighter leading-none tabular-nums w-auto lg:w-[140px] text-right inline-block ${isOvertime ? 'text-red-500 animate-pulse' :
           isNearEnd ? 'text-orange-500 animate-pulse' :
             'text-slate-700 dark:text-slate-200'
           }`}>

@@ -91,7 +91,7 @@ export const BedHeader = memo(({
         />
 
         {/* Right Section: Timer & Actions */}
-        <div className="flex-1 flex justify-end items-center gap-1 lg:gap-2 pl-2">
+        <div className="flex-1 flex justify-end items-center lg:gap-2 pl-2 pr-0">
 
           <BedTimer
             bed={bed}
