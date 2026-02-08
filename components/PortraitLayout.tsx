@@ -23,9 +23,9 @@ export const PortraitLayout: React.FC<BedLayoutProps> = memo(({ beds, presets })
   }, [config]);
 
   return (
-    <div className="flex flex-col gap-4 pb-6 md:pb-10 max-w-4xl mx-auto px-1 sm:px-1.5">
+    <div className="flex flex-col gap-4 pb-6 md:pb-10 md:portrait:pb-0 md:portrait:h-full max-w-4xl mx-auto px-1 sm:px-1.5 overflow-hidden">
       {groupedPairs.map((group, groupIdx) => (
-        <div key={`group-${groupIdx}`} className="flex flex-col gap-[1px]">
+        <div key={`group-${groupIdx}`} className="flex flex-col gap-[1px] md:portrait:flex-1 md:portrait:min-h-0">
           {group.map((pair, idx) => {
             const leftBed = pair.left ? getBed(pair.left) : null;
             const rightBed = pair.right ? getBed(pair.right) : null;

@@ -23,9 +23,9 @@ export const BedBay: React.FC<BedBayProps> = memo(({
   }
 
   return (
-    <div className={`h-full flex flex-col gap-1.5 sm:gap-3 p-0 sm:p-1 rounded-xl bg-transparent`}>
+    <div className={`h-full flex flex-col gap-1.5 sm:gap-3 p-0 sm:p-1 rounded-xl bg-transparent md:portrait:min-h-0`}>
       {beds.map(bed => (
-        <div key={bed.id} className="w-full h-full">
+        <div key={bed.id} className="w-full h-full md:portrait:flex-1 md:portrait:min-h-0">
           <BedCard
             bed={bed}
             presets={presets}

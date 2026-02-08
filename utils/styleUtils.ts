@@ -121,7 +121,7 @@ export const getBedCardStyles = (bed: BedState, isOvertime: boolean, isNearEnd: 
   let base = "relative flex flex-col h-full rounded-2xl overflow-hidden select-none transition-all duration-300 ";
 
   // Height Logic
-  const heightClasses = "min-h-[120px] sm:min-h-[130px] landscape:min-h-[200px] sm:landscape:min-h-[130px] lg:landscape:min-h-[200px] ";
+  const heightClasses = "min-h-[120px] sm:min-h-[130px] md:portrait:min-h-0 landscape:min-h-[200px] sm:landscape:min-h-[130px] lg:landscape:min-h-[200px] ";
 
   let statusClasses = "";
 
