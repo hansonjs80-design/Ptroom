@@ -8,6 +8,7 @@ import { QuickStartGrid } from './preset-selector/QuickStartGrid';
 import { TreatmentPreview } from './preset-selector/TreatmentPreview';
 import { useKeyboardShortcut } from '../hooks/useKeyboardShortcut';
 import { useListNavigation } from '../hooks/useListNavigation';
+import { useTreatmentContext } from '../contexts/TreatmentContext';
 
 interface PresetSelectorModalProps {
   isOpen: boolean;
@@ -42,6 +43,7 @@ export const PresetSelectorModal: React.FC<PresetSelectorModalProps> = memo(({
   initialOptions,
   initialPreset
 }) => {
+  const { quickTreatments } = useTreatmentContext();
   const [tractionDuration, setTractionDuration] = useState(15);
   const [previewPreset, setPreviewPreset] = useState<Preset | null>(null);
 
@@ -53,14 +55,50 @@ export const PresetSelectorModal: React.FC<PresetSelectorModalProps> = memo(({
     isFluid: false
   });
 
-  // Use keyboard shortcut for closing
+  const isTractionBed = targetBedId === 11;
+  const isLogMode = targetBedId === 0;
+
+  // 1. Navigation Logic for Lists
+  const totalListCount = presets.length + (isTractionBed ? 0 : quickTreatments.length);
+
+  const handleItemSelect = useCallback((index: number) => {
+    if (index < presets.length) {
+      setPreviewPreset(JSON.parse(JSON.stringify(presets[index])));
+    } else {
+      const qIndex = index - presets.length;
+      handleQuickItemClick(quickTreatments[qIndex]);
+    }
+  }, [presets, quickTreatments, isTractionBed]);
+
+  const { selectedIndex, setSelectedIndex } = useListNavigation({
+    itemCount: totalListCount,
+    onSelect: handleItemSelect,
+    active: isOpen && !previewPreset && !isTractionBed
+  });
+
+  // 2. Keyboard Shortcut for General Actions (Esc, Enter for Confirm)
+  // 2. Keyboard Shortcut for General Actions (Esc, Enter for Confirm)
   useKeyboardShortcut({
-    onEscape: onClose,
-    disableEscape: !isOpen
+    onEscape: isOpen ? () => {
+      if (previewPreset) {
+        setPreviewPreset(null);
+      } else {
+        onClose();
+      }
+    } : undefined,
+    onEnter: () => {
+      if (previewPreset) {
+        handleConfirmStart();
+      } else if (isTractionBed) {
+        handleTractionStart();
+      }
+    },
+    disableEnter: !isOpen || (!previewPreset && !isTractionBed)
   });
 
   useEffect(() => {
     if (isOpen) {
+      setSelectedIndex(0);
       if (initialOptions) {
         setOptions(initialOptions);
       } else {
@@ -76,9 +114,6 @@ export const PresetSelectorModal: React.FC<PresetSelectorModalProps> = memo(({
   }, [isOpen, initialOptions, initialPreset]);
 
   if (!isOpen || targetBedId === null) return null;
-
-  const isTractionBed = targetBedId === 11;
-  const isLogMode = targetBedId === 0;
 
   const handleTractionStart = () => {
     onStartTraction(targetBedId, tractionDuration, options);
@@ -220,6 +255,8 @@ export const PresetSelectorModal: React.FC<PresetSelectorModalProps> = memo(({
               <PresetListView
                 presets={presets}
                 onSelect={(p) => setPreviewPreset(JSON.parse(JSON.stringify(p)))}
+                highlightedIndex={selectedIndex < presets.length ? selectedIndex : -1}
+                onHoverIndex={setSelectedIndex}
               />
 
               <div className="relative">
@@ -233,6 +270,8 @@ export const PresetSelectorModal: React.FC<PresetSelectorModalProps> = memo(({
 
               <QuickStartGrid
                 onQuickStart={handleQuickItemClick}
+                highlightedIndex={selectedIndex >= presets.length ? (selectedIndex - presets.length) : -1}
+                onHoverIndex={(idx) => setSelectedIndex(idx + presets.length)}
               />
             </div>
           )}
