@@ -187,7 +187,7 @@ export const getStatusAreaStyles = (
     width += hasStatus ? 'lg:p-1 ' : 'lg:p-[10px] lg:min-w-[30px] ';
   }
 
-  const height = !isDesktop && isPortrait && hasStatus ? 'h-fit' : 'h-10';
+  const height = !isDesktop && isPortrait && hasStatus ? 'h-fit' : (isPortrait && !isDesktop ? 'h-9' : 'h-10');
 
   let transform = '';
   if (!isDesktop) {

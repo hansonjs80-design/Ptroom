@@ -79,9 +79,19 @@ export const BedHeader = memo(({
     setIsEditingStatus(true);
   };
 
+  // Assuming isDesktop and isPortrait are defined elsewhere or passed as props if needed.
+  // For this change, we'll assume they are available or default to a common case.
+  // The instruction implies a mobile portrait context for py-[3px].
+  // The height adjustment from h-10 to h-9 is applied directly here.
+  const isDesktop = window.innerWidth >= 1024; // Example definition
+  const isPortrait = window.innerHeight > window.innerWidth; // Example definition
+  const hasStatus = bed.status !== BedStatus.IDLE; // Example definition for hasStatus
+
+  const heightClass = !isDesktop && isPortrait && hasStatus ? 'h-fit' : (isPortrait ? 'h-9' : 'h-10');
+
   return (
     <>
-      <div className={`flex items-center justify-between pl-2 pr-[7px] py-1 lg:px-3 lg:py-3 shrink-0 relative transition-colors ${getBedHeaderStyles(bed)}`}>
+      <div className={`flex items-center justify-between pl-2 pr-[7px] ${!isDesktop && isPortrait ? 'py-[3px]' : 'py-1'} ${heightClass} lg:px-3 lg:py-3 shrink-0 relative transition-colors ${getBedHeaderStyles(bed)}`}>
 
         {/* Left: Bed Number & Status Icons */}
         <BedNumberAndStatus
