@@ -28,7 +28,7 @@ export const BedStatusBadges: React.FC<BedStatusBadgesProps> = memo(({ bed }) =>
   if (activeBadges.length === 0) return null;
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-[1px] lg:gap-1">
       {activeBadges.map((badge) => (
         <div
           key={badge.label}
