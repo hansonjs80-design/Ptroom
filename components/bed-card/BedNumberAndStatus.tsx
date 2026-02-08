@@ -1,8 +1,7 @@
-
 import React, { memo } from 'react';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { BedState, BedStatus } from '../../types';
-import { getBedNumberColor } from '../../utils/styleUtils';
+import { getBedNumberColor, hasAnyStatus, getStatusAreaStyles } from '../../utils/styleUtils';
 import { BedStatusBadges } from '../BedStatusBadges';
 
 interface BedNumberAndStatusProps {
@@ -17,7 +16,7 @@ export const BedNumberAndStatus: React.FC<BedNumberAndStatusProps> = memo(({ bed
 
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const isPortrait = useMediaQuery('(orientation: portrait)');
-  const hasStatus = !isIdle && (bed.isInjection || bed.isFluid || bed.isManual || bed.isESWT || bed.isTraction);
+  const hasStatus = hasAnyStatus(bed);
 
   return (
     <div className="flex items-center gap-[5px] lg:gap-2">
@@ -34,7 +33,7 @@ export const BedNumberAndStatus: React.FC<BedNumberAndStatusProps> = memo(({ bed
 
       {/* Status Icons Area */}
       <div
-        className={`flex items-center justify-center shrink-0 cursor-pointer ${!isDesktop && isPortrait && hasStatus ? 'p-0' : 'p-1'} w-auto ${!isDesktop ? (hasStatus ? 'w-fit min-w-0' : (isPortrait ? 'min-w-[25px]' : 'min-w-[21px]')) : (hasStatus ? 'lg:p-1' : 'lg:p-[10px] lg:min-w-[30px]')} ${!isDesktop && isPortrait && hasStatus ? 'h-fit' : 'h-10'} lg:h-auto ${!isDesktop ? (isPortrait ? 'translate-x-0' : (hasStatus ? '-translate-x-[11px]' : 'translate-x-[1px]')) : 'lg:translate-x-0'} ${isDesktop && !hasStatus ? 'lg:pr-[12px]' : 'lg:pr-[5px]'} rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-all overflow-visible`}
+        className={getStatusAreaStyles(hasStatus, isDesktop, isPortrait)}
         onClick={isDesktop ? onEditStatus : undefined}
         onDoubleClick={!isDesktop ? onEditStatus : undefined}
         title={isDesktop ? "클릭하여 상태 아이콘 설정" : "더블클릭하여 상태 아이콘 설정"}
