@@ -86,7 +86,6 @@ export const BedHeader = memo(({
   return (
     <>
       <div className={`flex items-center justify-between pl-2 pr-[7px] ${!isDesktop && isPortrait ? 'py-[3px]' : 'py-1'} lg:px-3 lg:py-2 shrink-0 relative transition-colors ${getBedHeaderStyles(bed)}`}>
-        Sands
 
         {/* Left: Bed Number & Status Icons */}
         <BedNumberAndStatus
