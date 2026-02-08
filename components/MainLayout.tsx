@@ -15,7 +15,7 @@ export const MainLayout: React.FC = () => {
   const { beds, presets } = useTreatmentContext();
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isDarkMode, setDarkMode] = useState(false);
-  
+
   // Sidebar Width State (Persisted)
   const [sidebarWidth, setSidebarWidth] = useLocalStorage<number>('log-sidebar-width', 620);
   const [isResizing, setIsResizing] = useState(false);
@@ -27,13 +27,13 @@ export const MainLayout: React.FC = () => {
     }
     return false;
   });
-  
+
   const [isFullScreen, setIsFullScreen] = useState(false);
-  
+
   const mainRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
-  
+
   useHeaderScroll(mainRef, headerRef);
 
   useEffect(() => {
@@ -66,7 +66,7 @@ export const MainLayout: React.FC = () => {
       window.addEventListener('mousemove', resize);
       window.addEventListener('mouseup', stopResizing);
       // Prevent text selection while dragging
-      document.body.style.userSelect = 'none'; 
+      document.body.style.userSelect = 'none';
       document.body.style.cursor = 'col-resize';
     } else {
       window.removeEventListener('mousemove', resize);
@@ -85,8 +85,8 @@ export const MainLayout: React.FC = () => {
 
   // Dynamic class generation for main content area to handle Full Screen transitions
   // Updated header height calculation for Tablet Compact Mode (52px)
-  const mainContentPadding = isFullScreen 
-    ? 'pt-[calc(env(safe-area-inset-top)+8px)] md:pt-[26px]' 
+  const mainContentPadding = isFullScreen
+    ? 'pt-[calc(env(safe-area-inset-top)+8px)] md:pt-[46px]'
     : `
       pt-[calc(62px+env(safe-area-inset-top)+1rem)] 
       landscape:pt-[calc(2.5rem+env(safe-area-inset-top))]
@@ -103,7 +103,7 @@ export const MainLayout: React.FC = () => {
         - Updated height with md:h-[52px] for tablet compactness
       */}
       {!isFullScreen && (
-        <div 
+        <div
           ref={headerRef}
           className="
             w-full z-40 will-change-transform
@@ -115,7 +115,7 @@ export const MainLayout: React.FC = () => {
             md:relative md:top-auto md:left-auto md:right-auto md:shrink-0
           "
         >
-          <AppHeader 
+          <AppHeader
             onOpenMenu={() => setMenuOpen(true)}
             isDarkMode={isDarkMode}
             onToggleDarkMode={() => setDarkMode(!isDarkMode)}
@@ -132,7 +132,7 @@ export const MainLayout: React.FC = () => {
       */}
       <div className="flex flex-1 overflow-hidden relative">
         {/* Left: Bed List Container */}
-        <main 
+        <main
           ref={mainRef}
           className={`
             flex-1 overflow-x-auto overflow-y-auto scroll-smooth touch-pan-x touch-pan-y overscroll-contain 
@@ -183,7 +183,7 @@ export const MainLayout: React.FC = () => {
           >
             <div className={`w-1 h-12 rounded-full transition-all group-hover:h-20 group-hover:bg-brand-400 ${isResizing ? 'bg-brand-500 h-24' : 'bg-gray-300 dark:bg-slate-700'}`} />
             <div className={`absolute p-1 bg-white dark:bg-slate-800 rounded-full shadow-md border border-gray-200 dark:border-slate-700 transition-opacity ${isResizing ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
-               <GripVertical className="w-3 h-3 text-gray-400" />
+              <GripVertical className="w-3 h-3 text-gray-400" />
             </div>
           </div>
         )}
@@ -196,7 +196,7 @@ export const MainLayout: React.FC = () => {
           - Dynamic Width controlled by sidebarWidth state
           - Added 'overflow-x-auto' to enable scrolling when shrunk
         */}
-        <aside 
+        <aside
           ref={sidebarRef}
           className={`
             hidden xl:block 
@@ -207,18 +207,18 @@ export const MainLayout: React.FC = () => {
           `}
           style={{ width: isLogOpen ? sidebarWidth : 0 }}
         >
-           {/* Inner container with min-width to maintain default size layout when shrunk */}
-           <div 
-             className="h-full border-l border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900"
-             style={{ 
-                minWidth: '620px', // Prevent inner content from squashing
-                width: '100%'      // Allow expansion if sidebar is wider than 620px
-             }}
-           >
-             <Suspense fallback={<div className="w-full h-full bg-white dark:bg-slate-900 animate-pulse" />}>
-               <PatientLogPanel />
-             </Suspense>
-           </div>
+          {/* Inner container with min-width to maintain default size layout when shrunk */}
+          <div
+            className="h-full border-l border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900"
+            style={{
+              minWidth: '620px', // Prevent inner content from squashing
+              width: '100%'      // Allow expansion if sidebar is wider than 620px
+            }}
+          >
+            <Suspense fallback={<div className="w-full h-full bg-white dark:bg-slate-900 animate-pulse" />}>
+              <PatientLogPanel />
+            </Suspense>
+          </div>
         </aside>
 
         {/* Mobile/Tablet Patient Log Overlay (Visible on < XL screens) */}
@@ -226,17 +226,17 @@ export const MainLayout: React.FC = () => {
           fixed inset-0 z-[100] bg-white dark:bg-slate-900 transition-transform duration-300 xl:hidden flex flex-col
           ${isLogOpen ? 'translate-x-0' : 'translate-x-full'}
         `}>
-           <div className="flex-1 w-full h-full relative pb-[env(safe-area-inset-bottom)]">
-             <Suspense fallback={<div className="w-full h-full bg-white dark:bg-slate-900 flex items-center justify-center"><span className="text-gray-400 font-bold">로딩 중...</span></div>}>
-                <PatientLogPanel onClose={() => setLogOpen(false)} />
-             </Suspense>
-           </div>
+          <div className="flex-1 w-full h-full relative pb-[env(safe-area-inset-bottom)]">
+            <Suspense fallback={<div className="w-full h-full bg-white dark:bg-slate-900 flex items-center justify-center"><span className="text-gray-400 font-bold">로딩 중...</span></div>}>
+              <PatientLogPanel onClose={() => setLogOpen(false)} />
+            </Suspense>
+          </div>
         </div>
       </div>
 
-      <GlobalModals 
-        isMenuOpen={isMenuOpen} 
-        onCloseMenu={() => setMenuOpen(false)} 
+      <GlobalModals
+        isMenuOpen={isMenuOpen}
+        onCloseMenu={() => setMenuOpen(false)}
         presets={presets}
       />
     </div>
