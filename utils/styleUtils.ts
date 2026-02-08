@@ -202,5 +202,7 @@ export const getStatusAreaStyles = (
 
   const desktopPaddingRight = isDesktop && !hasStatus ? 'lg:pr-[12px]' : 'lg:pr-[5px]';
 
-  return `flex items-center justify-center shrink-0 cursor-pointer ${padding} ${width} ${height} lg:h-auto ${transform} ${desktopPaddingRight} rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-all overflow-visible`;
+  const shrink = !isDesktop && isPortrait ? 'shrink-1 min-w-0' : 'shrink-0';
+
+  return `flex items-center justify-center ${shrink} cursor-pointer ${padding} ${width} ${height} lg:h-auto ${transform} ${desktopPaddingRight} rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-all overflow-visible`;
 };
