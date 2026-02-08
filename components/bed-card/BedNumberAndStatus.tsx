@@ -18,7 +18,7 @@ export const BedNumberAndStatus: React.FC<BedNumberAndStatusProps> = memo(({ bed
   const isDesktop = useMediaQuery('(min-width: 768px)');
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-[5px] lg:gap-2">
       {/* Bed Number */}
       <div
         className={`flex items-center justify-center transition-transform select-none ${isIdle ? 'cursor-default' : 'cursor-pointer active:scale-95'}`}
@@ -32,7 +32,7 @@ export const BedNumberAndStatus: React.FC<BedNumberAndStatusProps> = memo(({ bed
 
       {/* Status Icons Area */}
       <div
-        className="flex items-center cursor-pointer p-0 lg:p-3 w-[10px] lg:w-auto -translate-x-[3px] lg:translate-x-0 lg:pr-5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-all overflow-visible"
+        className="flex items-center cursor-pointer p-0 lg:p-3 w-[10px] lg:w-auto lg:pr-5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-all overflow-visible"
         onClick={isDesktop ? onEditStatus : undefined}
         onDoubleClick={!isDesktop ? onEditStatus : undefined}
         title={isDesktop ? "클릭하여 상태 아이콘 설정" : "더블클릭하여 상태 아이콘 설정"}
