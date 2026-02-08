@@ -1,8 +1,6 @@
 
 import React, { memo } from 'react';
-import { SkipForward, SkipBack, Check, X, Settings } from 'lucide-react';
-import { BedState, BedStatus, TreatmentStep } from '../types';
-import { BedTrashButton } from './BedTrashButton';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 
 interface BedFooterProps {
   bed: BedState;
@@ -39,6 +37,8 @@ const FooterButton = ({
 );
 
 export const BedFooter = memo(({ bed, steps, onNext, onPrev, onClear, trashState, onTrashClick, onEditClick }: BedFooterProps) => {
+  const isDesktop = useMediaQuery('(min-width: 768px)');
+  const isPortrait = useMediaQuery('(orientation: portrait)');
   const totalSteps = steps.length || 0;
   const isLastStep = bed.currentStepIndex === totalSteps - 1;
   const isCompleted = bed.status === BedStatus.COMPLETED;
