@@ -280,7 +280,7 @@ export const TreatmentSelectorCell: React.FC<TreatmentSelectorCellProps> = ({
                         defaultValue={value}
                         onBlur={handleTextCommit}
                         onKeyDown={handleKeyDown}
-                        className="w-full h-full bg-white dark:bg-slate-700 px-2 py-1 outline-none border-2 border-brand-500 rounded-sm text-xs sm:text-base text-center !text-gray-900 dark:!text-gray-100"
+                        className="w-full h-full bg-white dark:bg-slate-700 px-2 py-1 outline-none border-2 border-brand-500 rounded-sm text-xs sm:text-lg text-center !text-gray-900 dark:!text-gray-100"
                         placeholder={placeholder}
                     />
                 ) : (
@@ -301,7 +301,7 @@ export const TreatmentSelectorCell: React.FC<TreatmentSelectorCellProps> = ({
 
                         {/* Text Content */}
                         <div className="flex-1 min-w-0 flex justify-center pl-10 pr-2">
-                            <span className="text-xs sm:text-base xl:text-xs font-bold truncate pointer-events-none text-center w-full">
+                            <span className="text-xs sm:text-lg xl:text-sm font-bold truncate pointer-events-none text-center w-full">
                                 <TreatmentTextRenderer
                                     value={value}
                                     placeholder={placeholder}
