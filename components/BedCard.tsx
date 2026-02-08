@@ -12,12 +12,14 @@ interface BedCardProps {
   bed: BedState;
   presets: Preset[];
   isCompact: boolean;
+  side?: 'left' | 'right';
 }
 
 export const BedCard: React.FC<BedCardProps> = memo(({
   bed,
   presets,
-  isCompact
+  isCompact,
+  side
 }) => {
   const {
     setSelectingBedId,
@@ -101,6 +103,7 @@ export const BedCard: React.FC<BedCardProps> = memo(({
         onToggleTraction={toggleTraction}
         onToggleESWT={toggleESWT}
         onToggleManual={toggleManual}
+        side={side}
       />
 
       {/* Main Content Area */}

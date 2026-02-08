@@ -22,21 +22,23 @@ interface BedHeaderProps {
   onToggleTraction: (id: number) => void;
   onToggleESWT: (id: number) => void;
   onToggleManual: (id: number) => void;
+  side?: 'left' | 'right';
 }
 
-export const BedHeader = memo(({ 
-  bed, 
-  currentStep, 
-  onTrashClick, 
-  trashState, 
-  onEditClick, 
-  onTogglePause, 
+export const BedHeader = memo(({
+  bed,
+  currentStep,
+  onTrashClick,
+  trashState,
+  onEditClick,
+  onTogglePause,
   onUpdateDuration,
   onToggleInjection,
   onToggleFluid,
   onToggleTraction,
   onToggleESWT,
-  onToggleManual
+  onToggleManual,
+  side
 }: BedHeaderProps) => {
   const { setMovingPatientState } = useTreatmentContext();
   const [isEditingTimer, setIsEditingTimer] = useState(false);
@@ -45,7 +47,7 @@ export const BedHeader = memo(({
   const isTimerActive = bed.status === BedStatus.ACTIVE && !!currentStep?.enableTimer;
   const isOvertime = isTimerActive && bed.remainingTime <= 0;
   const isNearEnd = isTimerActive && bed.remainingTime > 0 && bed.remainingTime <= 60;
-  
+
   const handleTimerDoubleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -80,24 +82,25 @@ export const BedHeader = memo(({
   return (
     <>
       <div className={`flex items-center justify-between px-2 py-1 lg:px-3 lg:py-3 shrink-0 relative transition-colors ${getBedHeaderStyles(bed)}`}>
-        
+
         {/* Left: Bed Number & Status Icons */}
-        <BedNumberAndStatus 
-          bed={bed} 
-          onMovePatient={handleBedNumberDoubleClick} 
-          onEditStatus={handleStatusDoubleClick} 
+        <BedNumberAndStatus
+          bed={bed}
+          onMovePatient={handleBedNumberDoubleClick}
+          onEditStatus={handleStatusDoubleClick}
         />
 
         {/* Right Section: Timer & Actions */}
         <div className="flex-1 flex justify-end items-center gap-1 lg:gap-2 pl-2">
-          
-          <BedTimer 
+
+          <BedTimer
             bed={bed}
             isTimerActive={isTimerActive}
             isOvertime={isOvertime}
             isNearEnd={isNearEnd}
             onTimerClick={handleTimerDoubleClick}
             onTogglePause={handleTogglePause}
+            side={side}
           />
         </div>
       </div>

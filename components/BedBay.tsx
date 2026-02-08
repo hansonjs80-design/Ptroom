@@ -3,16 +3,17 @@ import { BedState, Preset } from '../types';
 import { BedCard } from './BedCard';
 
 interface BedBayProps {
-  beds: BedState[]; 
-  presets: Preset[]; 
+  beds: BedState[];
+  presets: Preset[];
   side: 'left' | 'right';
   isEmpty?: boolean;
 }
 
-export const BedBay: React.FC<BedBayProps> = memo(({ 
-  beds, 
-  presets, 
-  isEmpty 
+export const BedBay: React.FC<BedBayProps> = memo(({
+  beds,
+  presets,
+  side,
+  isEmpty
 }) => {
   if (isEmpty) {
     return (
@@ -25,10 +26,11 @@ export const BedBay: React.FC<BedBayProps> = memo(({
     <div className={`h-full flex flex-col gap-1.5 sm:gap-3 p-0 sm:p-1 rounded-xl bg-transparent`}>
       {beds.map(bed => (
         <div key={bed.id} className="w-full h-full">
-          <BedCard 
+          <BedCard
             bed={bed}
             presets={presets}
             isCompact={true}
+            side={side}
           />
         </div>
       ))}
