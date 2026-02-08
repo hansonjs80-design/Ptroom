@@ -150,14 +150,14 @@ create trigger on_quick_treatments_updated before update on public.quick_treatme
 -- Seed Quick Treatments (if empty)
 insert into public.quick_treatments (id, name, label, duration, color, enable_timer, rank)
 values 
-  ('qt-1', '핫팩 (Hot Pack)', 'HP', 10, 'bg-red-500', true, 0),
-  ('qt-2', 'ICT', 'ICT', 10, 'bg-blue-500', true, 1),
+  ('qt-1', '핫팩 (Hot Pack)', 'H', 10, 'bg-red-500', true, 0),
+  ('qt-2', 'ICT', 'i', 10, 'bg-blue-500', true, 1),
   ('qt-3', 'TENS', 'TENS', 10, 'bg-green-500', true, 2),
   ('qt-4', 'Laser', 'Laser', 5, 'bg-pink-500', true, 3),
-  ('qt-5', '자기장 (Magnetic)', 'Mg', 10, 'bg-purple-500', true, 4),
+  ('qt-5', '자기장 (Magnetic)', '자', 10, 'bg-purple-500', true, 4),
   ('qt-6', '적외선 (IR)', 'IR', 10, 'bg-red-500', true, 5),
   ('qt-7', '견인 (Traction)', '견인', 15, 'bg-orange-500', true, 6),
-  ('qt-8', '충격파 (ESWT)', 'ESWT', 10, 'bg-blue-500', true, 7),
+  ('qt-8', '충격파 (ESWT)', 'ES', 10, 'bg-blue-500', true, 7),
   ('qt-9', '이온치료 (ION)', 'ION', 10, 'bg-cyan-500', true, 8),
   ('qt-10', '공기압 (Air)', 'Air', 15, 'bg-gray-500', true, 9),
   ('qt-11', '냉치료 (Cryo)', 'Cryo', 5, 'bg-sky-500', true, 10),
