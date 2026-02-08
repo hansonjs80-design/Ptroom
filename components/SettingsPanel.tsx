@@ -2,6 +2,7 @@
 import React, { useState, Suspense } from 'react';
 import { X, Database, List, Settings as SettingsIcon, Sliders, Loader2 } from 'lucide-react';
 import { Preset } from '../types';
+import { useKeyboardShortcut } from '../hooks/useKeyboardShortcut';
 
 // Lazy load tabs to reduce initial bundle size
 const SettingsDatabaseTab = React.lazy(() => import('./SettingsDatabaseTab').then(m => ({ default: m.SettingsDatabaseTab })));
@@ -16,19 +17,24 @@ interface SettingsPanelProps {
   onResetAllBeds: () => void;
 }
 
-export const SettingsPanel: React.FC<SettingsPanelProps> = ({ 
-  isOpen, 
-  onClose, 
-  presets, 
+export const SettingsPanel: React.FC<SettingsPanelProps> = ({
+  isOpen,
+  onClose,
+  presets,
   onUpdatePresets,
   onResetAllBeds
 }) => {
   const [activeTab, setActiveTab] = useState<'connection' | 'presets' | 'preferences'>('presets');
-  
+
+  useKeyboardShortcut({
+    onEscape: onClose,
+    disableEscape: !isOpen
+  });
+
   return (
     <div className={`fixed inset-y-0 left-0 w-full sm:w-[550px] bg-slate-50 dark:bg-slate-950 shadow-2xl transform transition-transform duration-300 z-[60] ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
       <div className="h-full flex flex-col">
-        
+
         {/* Header: Glassmorphism Style */}
         <div className="shrink-0 pt-[env(safe-area-inset-top)] bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/50 dark:border-slate-800/50 z-20">
           <div className="flex items-center justify-between p-4 sm:p-5">
@@ -45,7 +51,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                 </h2>
               </div>
             </div>
-            <button 
+            <button
               onClick={onClose}
               className="p-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-full transition-colors text-slate-500"
             >
@@ -64,11 +70,10 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as any)}
-                  className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-xs font-bold transition-all duration-200 ${
-                    activeTab === tab.id
+                  className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-xs font-bold transition-all duration-200 ${activeTab === tab.id
                       ? 'bg-white dark:bg-slate-700 text-brand-600 dark:text-brand-400 shadow-sm'
                       : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300'
-                  }`}
+                    }`}
                 >
                   <tab.icon className="w-3.5 h-3.5" strokeWidth={2.5} />
                   <span className={`${activeTab === tab.id ? 'inline' : 'hidden sm:inline'}`}>{tab.label}</span>
@@ -87,16 +92,16 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
             </div>
           }>
             {activeTab === 'connection' && (
-              <SettingsDatabaseTab 
-                onResetAllBeds={onResetAllBeds} 
-                onClosePanel={onClose} 
+              <SettingsDatabaseTab
+                onResetAllBeds={onResetAllBeds}
+                onClosePanel={onClose}
               />
             )}
 
             {activeTab === 'presets' && (
-              <SettingsPresetTab 
-                presets={presets} 
-                onUpdatePresets={onUpdatePresets} 
+              <SettingsPresetTab
+                presets={presets}
+                onUpdatePresets={onUpdatePresets}
               />
             )}
 
@@ -105,12 +110,12 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
             )}
           </Suspense>
         </div>
-        
+
         {/* Footer */}
         <div className="p-4 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0 pb-[calc(env(safe-area-inset-bottom)+1rem)]">
           <div className="flex items-center justify-between text-[10px] font-bold text-slate-400">
-             <span>PhysioTrack Pro v2.1</span>
-             <span>Designed for Efficiency</span>
+            <span>PhysioTrack Pro v2.1</span>
+            <span>Designed for Efficiency</span>
           </div>
         </div>
       </div>

@@ -1,11 +1,13 @@
 
-import React, { useState, useEffect, memo } from 'react';
+import React, { useState, useEffect, memo, useCallback } from 'react';
 import { X, Play, ChevronLeft, Eraser, Check, Clock } from 'lucide-react';
 import { Preset, TreatmentStep, QuickTreatment } from '../types';
 import { OptionToggles } from './preset-selector/OptionToggles';
 import { PresetListView } from './preset-selector/PresetListView';
 import { QuickStartGrid } from './preset-selector/QuickStartGrid';
 import { TreatmentPreview } from './preset-selector/TreatmentPreview';
+import { useKeyboardShortcut } from '../hooks/useKeyboardShortcut';
+import { useListNavigation } from '../hooks/useListNavigation';
 
 interface PresetSelectorModalProps {
   isOpen: boolean;
@@ -42,13 +44,19 @@ export const PresetSelectorModal: React.FC<PresetSelectorModalProps> = memo(({
 }) => {
   const [tractionDuration, setTractionDuration] = useState(15);
   const [previewPreset, setPreviewPreset] = useState<Preset | null>(null);
-  
+
   const [options, setOptions] = useState({
     isInjection: false,
     isManual: false,
     isESWT: false,
     isTraction: false,
     isFluid: false
+  });
+
+  // Use keyboard shortcut for closing
+  useKeyboardShortcut({
+    onEscape: onClose,
+    disableEscape: !isOpen
   });
 
   useEffect(() => {
@@ -58,7 +66,7 @@ export const PresetSelectorModal: React.FC<PresetSelectorModalProps> = memo(({
       } else {
         setOptions({ isInjection: false, isManual: false, isESWT: false, isTraction: false, isFluid: false });
       }
-      
+
       if (initialPreset) {
         setPreviewPreset(JSON.parse(JSON.stringify(initialPreset)));
       } else {
@@ -110,11 +118,11 @@ export const PresetSelectorModal: React.FC<PresetSelectorModalProps> = memo(({
   };
 
   return (
-    <div 
+    <div
       className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-[2px] animate-in fade-in duration-200"
       onClick={onClose}
     >
-      <div 
+      <div
         className="w-full sm:w-[500px] max-h-[90vh] sm:max-h-[95vh] bg-white dark:bg-slate-900 rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden flex flex-col transition-all"
         onClick={e => e.stopPropagation()}
       >
@@ -122,7 +130,7 @@ export const PresetSelectorModal: React.FC<PresetSelectorModalProps> = memo(({
         <div className={`p-4 sm:p-5 flex justify-between items-center shrink-0 transition-colors ${getHeaderStyle()}`}>
           <div className="flex items-center gap-3">
             {previewPreset && (
-              <button 
+              <button
                 onClick={() => setPreviewPreset(null)}
                 className="p-1 -ml-2 hover:bg-black/5 dark:hover:bg-white/10 rounded-full transition-colors"
               >
@@ -138,47 +146,47 @@ export const PresetSelectorModal: React.FC<PresetSelectorModalProps> = memo(({
               </h3>
             </div>
           </div>
-          <button 
+          <button
             onClick={onClose}
             className="p-2 bg-white/50 dark:bg-black/20 hover:bg-white/80 dark:hover:bg-black/40 rounded-full transition-colors backdrop-blur-sm"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
-        
+
         {/* Options Area */}
         <OptionToggles options={options} setOptions={setOptions} />
 
         {/* Content Area */}
         <div className="flex-1 overflow-y-auto custom-scrollbar bg-slate-50 dark:bg-slate-950 p-2 sm:p-3 relative">
           {previewPreset ? (
-             <TreatmentPreview 
-               preset={previewPreset} 
-               setPreset={setPreviewPreset} 
-               onConfirm={handleConfirmStart} 
-               actionLabel={isLogMode ? "수정 완료" : "치료 시작"}
-               isLogEdit={isLogMode}
-             />
+            <TreatmentPreview
+              preset={previewPreset}
+              setPreset={setPreviewPreset}
+              onConfirm={handleConfirmStart}
+              actionLabel={isLogMode ? "수정 완료" : "치료 시작"}
+              isLogEdit={isLogMode}
+            />
           ) : isTractionBed ? (
             // Traction Specific UI
             <div className="flex flex-col items-center justify-center h-full min-h-[300px] gap-8 p-4">
               <div className="relative">
                 <div className="absolute inset-0 bg-orange-500 blur-[60px] opacity-10 rounded-full"></div>
                 <div className="relative w-48 h-48 rounded-full border-[6px] border-orange-100 dark:border-orange-900/30 flex flex-col items-center justify-center bg-white dark:bg-slate-900 shadow-xl">
-                   <Clock className="w-6 h-6 text-orange-400 mb-2 opacity-50" />
-                   <span className="text-6xl font-black text-slate-800 dark:text-white tracking-tighter">
-                     {tractionDuration}
-                   </span>
-                   <span className="text-sm font-bold text-gray-400 mt-1">MINUTES</span>
+                  <Clock className="w-6 h-6 text-orange-400 mb-2 opacity-50" />
+                  <span className="text-6xl font-black text-slate-800 dark:text-white tracking-tighter">
+                    {tractionDuration}
+                  </span>
+                  <span className="text-sm font-bold text-gray-400 mt-1">MINUTES</span>
                 </div>
                 {/* Control Buttons */}
-                <button 
+                <button
                   onClick={() => setTractionDuration(Math.max(1, tractionDuration - 1))}
                   className="absolute top-1/2 -left-6 -translate-y-1/2 w-12 h-12 rounded-full bg-white dark:bg-slate-800 shadow-lg border border-gray-100 dark:border-slate-700 flex items-center justify-center text-xl font-black text-slate-600 dark:text-slate-300 active:scale-90 transition-transform hover:bg-gray-50"
                 >
                   -
                 </button>
-                <button 
+                <button
                   onClick={() => setTractionDuration(tractionDuration + 1)}
                   className="absolute top-1/2 -right-6 -translate-y-1/2 w-12 h-12 rounded-full bg-white dark:bg-slate-800 shadow-lg border border-gray-100 dark:border-slate-700 flex items-center justify-center text-xl font-black text-slate-600 dark:text-slate-300 active:scale-90 transition-transform hover:bg-gray-50"
                 >
@@ -187,33 +195,33 @@ export const PresetSelectorModal: React.FC<PresetSelectorModalProps> = memo(({
               </div>
 
               <div className="flex gap-2">
-                 {[10, 15, 20].map(min => (
-                   <button 
-                     key={min}
-                     onClick={() => setTractionDuration(min)}
-                     className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${tractionDuration === min ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30 scale-105' : 'bg-white dark:bg-slate-800 text-gray-500 hover:bg-gray-100 dark:hover:bg-slate-700'}`}
-                   >
-                     {min}분
-                   </button>
-                 ))}
+                {[10, 15, 20].map(min => (
+                  <button
+                    key={min}
+                    onClick={() => setTractionDuration(min)}
+                    className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${tractionDuration === min ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30 scale-105' : 'bg-white dark:bg-slate-800 text-gray-500 hover:bg-gray-100 dark:hover:bg-slate-700'}`}
+                  >
+                    {min}분
+                  </button>
+                ))}
               </div>
 
-              <button 
-                onClick={handleTractionStart} 
+              <button
+                onClick={handleTractionStart}
                 className="w-full max-w-xs py-4 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-2xl font-black text-lg flex items-center justify-center gap-2 shadow-xl shadow-orange-500/20 transition-all active:scale-95"
               >
-                {isLogMode ? <Check className="w-6 h-6" /> : <Play className="w-6 h-6 fill-current" />} 
+                {isLogMode ? <Check className="w-6 h-6" /> : <Play className="w-6 h-6 fill-current" />}
                 {isLogMode ? '수정 완료' : '견인 치료 시작'}
               </button>
             </div>
           ) : (
             // Standard Preset & Quick List
             <div className="flex flex-col gap-4 pb-20">
-              <PresetListView 
-                presets={presets} 
-                onSelect={(p) => setPreviewPreset(JSON.parse(JSON.stringify(p)))} 
+              <PresetListView
+                presets={presets}
+                onSelect={(p) => setPreviewPreset(JSON.parse(JSON.stringify(p)))}
               />
-              
+
               <div className="relative">
                 <div className="absolute inset-0 flex items-center" aria-hidden="true">
                   <div className="w-full border-t border-gray-200 dark:border-slate-700"></div>
@@ -223,24 +231,24 @@ export const PresetSelectorModal: React.FC<PresetSelectorModalProps> = memo(({
                 </div>
               </div>
 
-              <QuickStartGrid 
-                onQuickStart={handleQuickItemClick} 
+              <QuickStartGrid
+                onQuickStart={handleQuickItemClick}
               />
             </div>
           )}
         </div>
-        
+
         {/* Bottom Actions (Only for Log Mode or standard footer) */}
         {isLogMode && onClearLog && !previewPreset && !isTractionBed && (
-           <div className="p-3 bg-white dark:bg-slate-900 border-t border-gray-100 dark:border-slate-800 shrink-0">
-             <button 
-               onClick={() => { onClearLog(); onClose(); }} 
-               className="w-full py-3 text-sm font-bold text-red-500 bg-red-50 hover:bg-red-100 dark:bg-red-900/10 dark:hover:bg-red-900/30 rounded-2xl transition-colors flex items-center justify-center gap-2"
-             >
-               <Eraser className="w-4 h-4" />
-               데이터 비우기 (Clear)
-             </button>
-           </div>
+          <div className="p-3 bg-white dark:bg-slate-900 border-t border-gray-100 dark:border-slate-800 shrink-0">
+            <button
+              onClick={() => { onClearLog(); onClose(); }}
+              className="w-full py-3 text-sm font-bold text-red-500 bg-red-50 hover:bg-red-100 dark:bg-red-900/10 dark:hover:bg-red-900/30 rounded-2xl transition-colors flex items-center justify-center gap-2"
+            >
+              <Eraser className="w-4 h-4" />
+              데이터 비우기 (Clear)
+            </button>
+          </div>
         )}
       </div>
     </div>

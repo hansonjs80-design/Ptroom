@@ -6,6 +6,7 @@ import { PatientVisit } from '../../types';
 import { ContextMenu } from '../common/ContextMenu';
 import { TreatmentTextRenderer } from './TreatmentTextRenderer';
 import { TreatmentControlButtons } from './TreatmentControlButtons';
+import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 
 interface TreatmentSelectorCellProps {
     visit?: PatientVisit;
@@ -49,6 +50,19 @@ export const TreatmentSelectorCell: React.FC<TreatmentSelectorCellProps> = ({
     const cellRef = useRef<HTMLDivElement>(null);
 
     const inputRef = useRef<HTMLInputElement>(null);
+
+    // Keyboard Shortcut Hook for Global Popups
+    useKeyboardShortcut({
+        onEscape: () => {
+            if (mode === 'menu') setMode('view');
+            if (popupState) setPopupState(null);
+            if (hoverInfo) setHoverInfo(null);
+        },
+        onEnter: () => {
+            if (popupState) executeStepAction();
+        },
+        disableEnter: !popupState // Only enable global Enter when popup is visible
+    });
 
     useEffect(() => {
         if (mode === 'edit_text' && inputRef.current) {
@@ -345,8 +359,8 @@ export const TreatmentSelectorCell: React.FC<TreatmentSelectorCellProps> = ({
                             <button
                                 onClick={executeStepAction}
                                 className={`flex-1 py-1 text-white rounded text-[10px] font-bold flex items-center justify-center gap-0.5 ${popupState.type === 'clear' || (popupState.type === 'next' && isLastStep)
-                                        ? 'bg-red-600 hover:bg-red-700'
-                                        : 'bg-brand-600 hover:bg-brand-700'
+                                    ? 'bg-red-600 hover:bg-red-700'
+                                    : 'bg-brand-600 hover:bg-brand-700'
                                     }`}
                             >
                                 <Check className="w-3 h-3" /> 예

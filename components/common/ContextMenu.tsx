@@ -1,7 +1,9 @@
+```typescript
 
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
+import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 
 interface ContextMenuProps {
   title: string;
@@ -20,6 +22,9 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState(position);
+
+  // Enable Esc to close
+  useKeyboardShortcut({ onEscape: onClose });
 
   useLayoutEffect(() => {
     if (containerRef.current) {

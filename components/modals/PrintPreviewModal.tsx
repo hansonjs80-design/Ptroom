@@ -1,8 +1,11 @@
+```typescript
 
-import React, { useState } from 'react';
-import { X, Printer, FileDown, CheckCircle, Loader2 } from 'lucide-react';
+import React, { useRef } from 'react';
+import { X, Printer, Calendar } from 'lucide-react';
 import { PatientLogPrintView } from '../patient-log/PatientLogPrintView';
 import { PatientVisit } from '../../types';
+import { useReactToPrint } from 'react-to-print';
+import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 
 interface PrintPreviewModalProps {
   isOpen: boolean;
@@ -17,13 +20,20 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
   visits, 
   currentDate 
 }) => {
-  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+  const componentRef = useRef<HTMLDivElement>(null);
+
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    documentTitle: `physiotrack_log_${ currentDate } `,
+  });
+
+  useKeyboardShortcut({ 
+    onEscape: onClose,
+    onEnter: handlePrint 
+  });
 
   if (!isOpen) return null;
 
-  const handlePrint = () => {
-    // Standard System Print Dialog
-    window.print();
   };
 
   const handleDownloadPDF = async () => {
@@ -39,7 +49,7 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
 
     const opt = {
       margin: 10,
-      filename: `physiotrack_log_${currentDate}.pdf`,
+      filename: `physiotrack_log_${ currentDate }.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { scale: 2, useCORS: true },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }

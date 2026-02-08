@@ -1,7 +1,7 @@
-
 import React, { useState, useRef, useLayoutEffect, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Save, X } from 'lucide-react';
+import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 
 interface PopupEditorProps {
   title: string;
@@ -29,6 +29,12 @@ export const PopupEditor: React.FC<PopupEditorProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Keyboard shortcuts for Escape and Enter
+  useKeyboardShortcut({
+    onEscape: onCancel,
+    onEnter: () => onConfirm(value) // Pass the current value on Enter
+  });
+
   // Smart Positioning: 화면 밖으로 나가지 않게 조정 (centered 모드가 아닐 때만)
   useLayoutEffect(() => {
     if (centered || !position) return;
@@ -37,7 +43,7 @@ export const PopupEditor: React.FC<PopupEditorProps> = ({
       const rect = containerRef.current.getBoundingClientRect();
       const screenW = window.innerWidth;
       const screenH = window.innerHeight;
-      
+
       let newX = position.x;
       let newY = position.y;
 
@@ -75,16 +81,16 @@ export const PopupEditor: React.FC<PopupEditorProps> = ({
     }
   };
 
-  const overlayClass = centered 
-    ? "fixed inset-0 z-[9999] bg-black/40 backdrop-blur-[2px] flex items-center justify-center animate-in fade-in duration-200" 
+  const overlayClass = centered
+    ? "fixed inset-0 z-[9999] bg-black/40 backdrop-blur-[2px] flex items-center justify-center animate-in fade-in duration-200"
     : "fixed inset-0 z-[9999] bg-transparent";
 
-  const containerStyle = centered 
-    ? {} 
+  const containerStyle = centered
+    ? {}
     : { top: pos.y, left: pos.x };
 
   return createPortal(
-    <div 
+    <div
       className={overlayClass}
       onClick={onCancel}
     >
@@ -96,7 +102,7 @@ export const PopupEditor: React.FC<PopupEditorProps> = ({
       >
         <div className="flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border-b border-gray-100 dark:border-slate-700">
           <span className="text-sm font-bold text-gray-600 dark:text-gray-300">{title}</span>
-          <button 
+          <button
             onClick={onCancel}
             className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
           >
@@ -123,17 +129,17 @@ export const PopupEditor: React.FC<PopupEditorProps> = ({
 
           <div className="flex gap-2">
             <button
-                onClick={onCancel}
-                className="flex-1 py-3 bg-gray-100 dark:bg-slate-700 text-gray-500 dark:text-gray-300 rounded-xl font-bold text-sm hover:bg-gray-200 dark:hover:bg-slate-600 transition-colors"
+              onClick={onCancel}
+              className="flex-1 py-3 bg-gray-100 dark:bg-slate-700 text-gray-500 dark:text-gray-300 rounded-xl font-bold text-sm hover:bg-gray-200 dark:hover:bg-slate-600 transition-colors"
             >
-                취소
+              취소
             </button>
             <button
-                onClick={() => onConfirm(value)}
-                className="flex-1 py-3 bg-brand-600 text-white rounded-xl font-bold text-sm shadow-md hover:bg-brand-700 active:scale-95 transition-all flex items-center justify-center gap-1.5"
+              onClick={() => onConfirm(value)}
+              className="flex-1 py-3 bg-brand-600 text-white rounded-xl font-bold text-sm shadow-md hover:bg-brand-700 active:scale-95 transition-all flex items-center justify-center gap-1.5"
             >
-                <Save className="w-4 h-4" />
-                저장
+              <Save className="w-4 h-4" />
+              저장
             </button>
           </div>
         </div>
