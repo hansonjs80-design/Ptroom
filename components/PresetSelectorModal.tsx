@@ -6,6 +6,7 @@ import { QuickStartGrid } from './preset-selector/QuickStartGrid';
 import { TreatmentPreview } from './preset-selector/TreatmentPreview';
 import { useKeyboardShortcut } from '../hooks/useKeyboardShortcut';
 import { useListNavigation } from '../hooks/useListNavigation';
+import { useGridNavigation } from '../hooks/useGridNavigation';
 import { useTreatmentContext } from '../contexts/TreatmentContext';
 import { PresetSelectorHeader } from './preset-selector/PresetSelectorHeader';
 import { TractionSelector } from './preset-selector/TractionSelector';
@@ -49,6 +50,9 @@ export const PresetSelectorModal: React.FC<PresetSelectorModalProps> = memo(({
   const [previewPreset, setPreviewPreset] = useState<Preset | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
+  // Navigation focus: 'presets' or 'quick'
+  const [navFocus, setNavFocus] = useState<'presets' | 'quick'>('presets');
+
   const [options, setOptions] = useState({
     isInjection: false,
     isManual: false,
@@ -60,30 +64,50 @@ export const PresetSelectorModal: React.FC<PresetSelectorModalProps> = memo(({
   const isTractionBed = targetBedId === 11;
   const isLogMode = targetBedId === 0;
 
-  // 1. Navigation Logic for Lists
-  const totalListCount = presets.length + (isTractionBed ? 0 : quickTreatments.length);
+  // Grid dimensions for QuickStartGrid (5 columns on desktop)
+  const quickGridCols = 5;
+  const quickGridRows = Math.ceil(quickTreatments.length / quickGridCols);
 
-  // Determine columns for grid navigation (QuickStartGrid has 5 columns on desktop)
-  const quickGridColumns = 5;
-  const isInQuickGrid = (index: number) => index >= presets.length;
-
-  const handleItemSelect = useCallback((index: number) => {
-    if (index < presets.length) {
+  // 1. Navigation for Preset List (1D vertical)
+  const handlePresetSelect = useCallback((index: number) => {
+    if (index >= 0 && index < presets.length) {
       setPreviewPreset(JSON.parse(JSON.stringify(presets[index])));
-    } else {
-      const qIndex = index - presets.length;
-      handleQuickItemClick(quickTreatments[qIndex]);
     }
-  }, [presets, quickTreatments, isTractionBed]);
+  }, [presets]);
 
-  const { selectedIndex, setSelectedIndex } = useListNavigation({
-    itemCount: totalListCount,
-    onSelect: handleItemSelect,
-    active: isOpen && !previewPreset && !isTractionBed,
-    containerRef: contentRef
+  const { selectedIndex: presetIndex, setSelectedIndex: setPresetIndex } = useListNavigation({
+    itemCount: presets.length,
+    onSelect: handlePresetSelect,
+    active: isOpen && !previewPreset && !isTractionBed && navFocus === 'presets',
+    containerRef: contentRef,
+    onExitBottom: () => {
+      // Move focus to QuickStartGrid
+      setNavFocus('quick');
+    }
   });
 
-  // 2. Keyboard Shortcut for General Actions (Esc, Enter for Confirm)
+  // 2. Navigation for QuickStartGrid (2D grid)
+  const handleQuickSelect = useCallback((row: number, col: number) => {
+    const index = row * quickGridCols + col;
+    if (index >= 0 && index < quickTreatments.length) {
+      handleQuickItemClick(quickTreatments[index]);
+    }
+  }, [quickTreatments, quickGridCols]);
+
+  const { selectedIndex: quickIndex, setPosition: setQuickPosition } = useGridNavigation({
+    rows: quickGridRows,
+    cols: quickGridCols,
+    onSelect: handleQuickSelect,
+    active: isOpen && !previewPreset && !isTractionBed && navFocus === 'quick',
+    containerRef: contentRef,
+    onExitTop: () => {
+      // Move focus back to Preset List (last item)
+      setNavFocus('presets');
+      setPresetIndex(presets.length - 1);
+    }
+  });
+
+  // 3. Keyboard Shortcut for General Actions (Esc, Enter for Confirm)
   useKeyboardShortcut({
     onEscape: isOpen ? () => {
       if (previewPreset) {
@@ -104,7 +128,9 @@ export const PresetSelectorModal: React.FC<PresetSelectorModalProps> = memo(({
 
   useEffect(() => {
     if (isOpen) {
-      setSelectedIndex(0);
+      setPresetIndex(0);
+      setQuickPosition(0, 0);
+      setNavFocus('presets');
       if (initialOptions) {
         setOptions(initialOptions);
       } else {
@@ -193,8 +219,11 @@ export const PresetSelectorModal: React.FC<PresetSelectorModalProps> = memo(({
               <PresetListView
                 presets={presets}
                 onSelect={(p) => setPreviewPreset(JSON.parse(JSON.stringify(p)))}
-                highlightedIndex={selectedIndex < presets.length ? selectedIndex : -1}
-                onHoverIndex={setSelectedIndex}
+                highlightedIndex={navFocus === 'presets' ? presetIndex : -1}
+                onHoverIndex={(idx) => {
+                  setNavFocus('presets');
+                  setPresetIndex(idx);
+                }}
               />
 
               <div className="relative">
@@ -208,8 +237,13 @@ export const PresetSelectorModal: React.FC<PresetSelectorModalProps> = memo(({
 
               <QuickStartGrid
                 onQuickStart={handleQuickItemClick}
-                highlightedIndex={selectedIndex >= presets.length ? (selectedIndex - presets.length) : -1}
-                onHoverIndex={(idx) => setSelectedIndex(idx + presets.length)}
+                highlightedIndex={navFocus === 'quick' ? quickIndex : -1}
+                onHoverIndex={(idx) => {
+                  setNavFocus('quick');
+                  const row = Math.floor(idx / quickGridCols);
+                  const col = idx % quickGridCols;
+                  setQuickPosition(row, col);
+                }}
               />
             </div>
           )}

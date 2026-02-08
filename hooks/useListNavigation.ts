@@ -8,19 +8,22 @@ interface UseListNavigationOptions {
     initialIndex?: number;
     loop?: boolean;
     active?: boolean;
-    columnsPerRow?: number; // For grid navigation (left/right arrows)
-    containerRef?: RefObject<HTMLElement>; // For auto-scrolling
+    containerRef?: RefObject<HTMLElement>;
+    onExitBottom?: () => void; // Callback when trying to go past the last item
 }
 
+/**
+ * 1D List navigation hook for vertical navigation with up/down arrows
+ */
 export const useListNavigation = ({
     itemCount,
     onSelect,
     onEnter,
     initialIndex = 0,
-    loop = true,
+    loop = false, // Changed default to false for better UX
     active = true,
-    columnsPerRow = 1,
-    containerRef
+    containerRef,
+    onExitBottom
 }: UseListNavigationOptions) => {
     const [selectedIndex, setSelectedIndex] = useState(initialIndex);
 
@@ -51,39 +54,20 @@ export const useListNavigation = ({
 
         if (e.key === 'ArrowDown') {
             e.preventDefault();
-            setSelectedIndex(prev => {
-                const next = prev + columnsPerRow;
-                if (next >= itemCount) return loop ? (prev % columnsPerRow) : prev;
-                return next;
-            });
+            if (selectedIndex < itemCount - 1) {
+                setSelectedIndex(prev => prev + 1);
+            } else if (onExitBottom) {
+                onExitBottom();
+            } else if (loop) {
+                setSelectedIndex(0);
+            }
         } else if (e.key === 'ArrowUp') {
             e.preventDefault();
-            setSelectedIndex(prev => {
-                const next = prev - columnsPerRow;
-                if (next < 0) {
-                    if (!loop) return prev;
-                    // Jump to last row, same column
-                    const col = prev % columnsPerRow;
-                    const lastRowStart = Math.floor((itemCount - 1) / columnsPerRow) * columnsPerRow;
-                    const lastRowIndex = lastRowStart + col;
-                    return lastRowIndex < itemCount ? lastRowIndex : itemCount - 1;
-                }
-                return next;
-            });
-        } else if (e.key === 'ArrowRight' && columnsPerRow > 1) {
-            e.preventDefault();
-            setSelectedIndex(prev => {
-                const next = prev + 1;
-                if (next >= itemCount) return loop ? 0 : prev;
-                return next;
-            });
-        } else if (e.key === 'ArrowLeft' && columnsPerRow > 1) {
-            e.preventDefault();
-            setSelectedIndex(prev => {
-                const next = prev - 1;
-                if (next < 0) return loop ? itemCount - 1 : prev;
-                return next;
-            });
+            if (selectedIndex > 0) {
+                setSelectedIndex(prev => prev - 1);
+            } else if (loop) {
+                setSelectedIndex(itemCount - 1);
+            }
         } else if (e.key === 'Enter') {
             e.preventDefault();
             if (onEnter) {
@@ -92,7 +76,7 @@ export const useListNavigation = ({
                 onSelect(selectedIndex);
             }
         }
-    }, [active, itemCount, loop, selectedIndex, onSelect, onEnter, columnsPerRow]);
+    }, [active, itemCount, loop, selectedIndex, onSelect, onEnter, onExitBottom]);
 
     useEffect(() => {
         if (active) {
