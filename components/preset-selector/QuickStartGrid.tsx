@@ -30,11 +30,12 @@ export const QuickStartGrid: React.FC<QuickStartGridProps> = ({
           return (
             <button
               key={item.id}
+              data-nav-item
               onClick={() => onQuickStart(item)}
               onMouseEnter={() => onHoverIndex?.(index)}
               className={`group flex flex-col items-center justify-center p-1.5 h-16 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border-2 transition-all active:scale-95 outline-none ${isHighlighted
-                  ? 'border-brand-500 ring-2 ring-brand-500/20 shadow-md scale-105'
-                  : 'border-transparent hover:border-brand-300 dark:hover:border-slate-600 hover:shadow-md'
+                ? 'border-brand-500 ring-2 ring-brand-500/20 shadow-md scale-105'
+                : 'border-transparent hover:border-brand-300 dark:hover:border-slate-600 hover:shadow-md'
                 }`}
             >
               <div className={`w-1.5 h-1.5 rounded-full ${item.color} mb-1.5 shadow-sm group-hover:scale-125 transition-transform ${isHighlighted ? 'scale-125' : ''}`} />

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, memo, useCallback } from 'react';
+import React, { useState, useEffect, memo, useCallback, useRef } from 'react';
 import { Preset, TreatmentStep, QuickTreatment } from '../types';
 import { OptionToggles } from './preset-selector/OptionToggles';
 import { PresetListView } from './preset-selector/PresetListView';
@@ -47,6 +47,7 @@ export const PresetSelectorModal: React.FC<PresetSelectorModalProps> = memo(({
   const { quickTreatments } = useTreatmentContext();
   const [tractionDuration, setTractionDuration] = useState(15);
   const [previewPreset, setPreviewPreset] = useState<Preset | null>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   const [options, setOptions] = useState({
     isInjection: false,
@@ -62,6 +63,10 @@ export const PresetSelectorModal: React.FC<PresetSelectorModalProps> = memo(({
   // 1. Navigation Logic for Lists
   const totalListCount = presets.length + (isTractionBed ? 0 : quickTreatments.length);
 
+  // Determine columns for grid navigation (QuickStartGrid has 5 columns on desktop)
+  const quickGridColumns = 5;
+  const isInQuickGrid = (index: number) => index >= presets.length;
+
   const handleItemSelect = useCallback((index: number) => {
     if (index < presets.length) {
       setPreviewPreset(JSON.parse(JSON.stringify(presets[index])));
@@ -74,7 +79,8 @@ export const PresetSelectorModal: React.FC<PresetSelectorModalProps> = memo(({
   const { selectedIndex, setSelectedIndex } = useListNavigation({
     itemCount: totalListCount,
     onSelect: handleItemSelect,
-    active: isOpen && !previewPreset && !isTractionBed
+    active: isOpen && !previewPreset && !isTractionBed,
+    containerRef: contentRef
   });
 
   // 2. Keyboard Shortcut for General Actions (Esc, Enter for Confirm)
@@ -165,7 +171,7 @@ export const PresetSelectorModal: React.FC<PresetSelectorModalProps> = memo(({
         <OptionToggles options={options} setOptions={setOptions} />
 
         {/* Content Area */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar bg-slate-50 dark:bg-slate-950 p-2 sm:p-3 relative">
+        <div ref={contentRef} className="flex-1 overflow-y-auto custom-scrollbar bg-slate-50 dark:bg-slate-950 p-2 sm:p-3 relative">
           {previewPreset ? (
             <TreatmentPreview
               preset={previewPreset}

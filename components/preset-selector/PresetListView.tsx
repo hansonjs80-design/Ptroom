@@ -61,8 +61,8 @@ export const PresetListView: React.FC<PresetListViewProps> = ({
                 key={String(opt.val)}
                 onClick={() => setFilterStep(opt.val as any)}
                 className={`px-2.5 py-1 text-[10px] font-bold rounded-md transition-all ${filterStep === opt.val
-                    ? 'bg-white dark:bg-slate-600 text-brand-600 dark:text-brand-400 shadow-sm'
-                    : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'
+                  ? 'bg-white dark:bg-slate-600 text-brand-600 dark:text-brand-400 shadow-sm'
+                  : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'
                   }`}
               >
                 {opt.label}
@@ -74,8 +74,8 @@ export const PresetListView: React.FC<PresetListViewProps> = ({
           <button
             onClick={toggleSort}
             className={`p-1.5 rounded-lg transition-colors flex items-center justify-center w-7 h-7 ${sortDir !== 'none'
-                ? 'bg-brand-100 text-brand-600 dark:bg-brand-900/40 dark:text-brand-400'
-                : 'bg-slate-100 text-slate-400 dark:bg-slate-800'
+              ? 'bg-brand-100 text-brand-600 dark:bg-brand-900/40 dark:text-brand-400'
+              : 'bg-slate-100 text-slate-400 dark:bg-slate-800'
               }`}
           >
             <ArrowUpDown className="w-3.5 h-3.5" />
@@ -98,11 +98,12 @@ export const PresetListView: React.FC<PresetListViewProps> = ({
             return (
               <button
                 key={preset.id}
+                data-nav-item
                 onClick={() => onSelect(preset)}
                 onMouseEnter={() => onHoverIndex?.(index)}
                 className={`group relative w-full p-3 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border-2 transition-all active:scale-[0.98] text-left flex items-center justify-between outline-none ${isHighlighted
-                    ? 'border-brand-500 ring-2 ring-brand-500/20 shadow-md transform scale-[1.01]'
-                    : 'border-transparent hover:border-brand-300 dark:hover:border-slate-600 hover:shadow-md'
+                  ? 'border-brand-500 ring-2 ring-brand-500/20 shadow-md transform scale-[1.01]'
+                  : 'border-transparent hover:border-brand-300 dark:hover:border-slate-600 hover:shadow-md'
                   }`}
               >
                 <div className="flex-1 min-w-0 pr-3">
