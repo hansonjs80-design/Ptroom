@@ -91,11 +91,16 @@ export const BedFooter = memo(({ bed, steps, onNext, onPrev, onClear, trashState
               onClick={onTrashClick}
               disabled={trashState === 'deleting'}
               className={`w-full h-full rounded-xl transition-all duration-200 flex items-center justify-center active:scale-95 shadow-sm ${trashState === 'idle' ? 'bg-slate-100 text-slate-400 dark:bg-slate-700 dark:text-slate-500 hover:text-red-600 hover:bg-red-50' :
-                  trashState === 'confirm' ? 'bg-red-500 text-white ring-2 ring-red-200 dark:ring-red-900' :
-                    'bg-slate-100 text-slate-400'
+                trashState === 'confirm' ? 'bg-red-500 text-white ring-2 ring-red-200 dark:ring-red-900' :
+                  'bg-slate-100 text-slate-400'
                 }`}
             >
-              <BedTrashButton trashState={trashState} onClick={onTrashClick} />
+              <BedTrashButton
+                trashState={trashState}
+                onClick={onTrashClick}
+                isDesktop={isDesktop}
+                isPortrait={isPortrait}
+              />
             </button>
           </div>
         )}
@@ -104,8 +109,8 @@ export const BedFooter = memo(({ bed, steps, onNext, onPrev, onClear, trashState
         <FooterButton
           onClick={() => onNext(bed.id)}
           className={`flex-1 ${isLastStep
-              ? 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-red-200 dark:shadow-none'
-              : 'bg-brand-100 hover:bg-brand-200 dark:bg-brand-900/40 dark:hover:bg-brand-900/60 text-brand-700 dark:text-brand-300 font-bold'
+            ? 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-red-200 dark:shadow-none'
+            : 'bg-brand-100 hover:bg-brand-200 dark:bg-brand-900/40 dark:hover:bg-brand-900/60 text-brand-700 dark:text-brand-300 font-bold'
             }`}
         >
           {isLastStep ? (
