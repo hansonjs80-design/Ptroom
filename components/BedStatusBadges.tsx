@@ -5,6 +5,7 @@ import { BedState, BedStatus } from '../types';
 
 interface BedStatusBadgesProps {
   bed: BedState;
+  isDesktop?: boolean;
 }
 
 interface BadgeConfig {
@@ -22,7 +23,7 @@ const BADGES: BadgeConfig[] = [
   { key: 'isTraction', label: '견인', icon: ArrowUpFromLine, colorClass: 'text-orange-500' }
 ];
 
-export const BedStatusBadges: React.FC<BedStatusBadgesProps> = memo(({ bed }) => {
+export const BedStatusBadges: React.FC<BedStatusBadgesProps> = memo(({ bed, isDesktop = false }) => {
   if (bed.status === BedStatus.IDLE) return null;
   const activeBadges = BADGES.filter(b => bed[b.key]);
   if (activeBadges.length === 0) return null;
@@ -35,7 +36,11 @@ export const BedStatusBadges: React.FC<BedStatusBadgesProps> = memo(({ bed }) =>
           className={`flex items-center justify-center p-0.5 rounded-full bg-transparent shadow-none ${badge.colorClass}`}
           title={badge.label}
         >
-          <badge.icon className="w-[18px] h-[18px] sm:w-[21.2px] sm:h-[21.2px]" strokeWidth={2.5} />
+          <badge.icon
+            size={isDesktop ? 21.2 : 18}
+            className={badge.colorClass}
+            strokeWidth={2.5}
+          />
         </div>
       ))}
     </div>
